@@ -472,7 +472,7 @@
             <span id="chat-status-badge" class="text-xs bg-white text-[#00a884] px-3 py-1 rounded-full font-bold shadow-sm">مفتوحة</span>
         </div>
         
-        <div id="chat-messages-container" class="flex-1 overflow-y-auto overflow-x-hidden p-4 w-full bg-[#e5ddd5] relative z-10 pb-6">
+        <div id="chat-messages-container" class="flex-1 overflow-y-auto overflow-x-hidden p-4 w-full bg-[#e5ddd5] relative z-10 pb-6 flex flex-col">
             </div>
 
         <div id="chat-input-area" class="p-3 bg-[#f0f2f5] flex items-end gap-2 shrink-0 z-20 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
@@ -1479,10 +1479,10 @@
                     contactHtml = `<span class="block w-full bg-gray-100 text-gray-500 text-center font-bold py-2 rounded-lg text-xs border border-gray-200">🛑 المحل مستكفي حالياً (لا يستقبل اتصالات)</span>`;
                 }
 
-                // زر الموقع (الخريطة)
+                // زر الموقع (الخريطة) تحديث ليعمل مع بحث الخرائط الرسمي
                 let mapUrl = request.mapLink && request.mapLink.trim() !== '' 
                              ? request.mapLink 
-                             : `http://googleusercontent.com/maps.google.com/?q=${encodeURIComponent(request.bakeryName + ' ' + govLabel)}`;
+                             : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(request.bakeryName + ' ' + govLabel)}`;
                 
                 let mapBtnHtml = `<a href="${mapUrl}" target="_blank" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-center font-bold py-2 px-4 rounded-lg text-xs transition block border border-emerald-200 mt-2">📍 الموقع على الخريطة</a>`;
 
@@ -2130,7 +2130,8 @@
                 const dateStr = timeObj.toLocaleDateString('ar-EG');
                 const prevMsgDate = index > 0 ? new Date(messages[index-1].timestamp).toLocaleDateString('ar-EG') : null;
                 if(dateStr !== prevMsgDate) {
-                    fullHtml += `<div style="clear: both; margin-bottom: 16px; text-align: center; width: 100%;"><span class="bg-white/60 text-gray-600 text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm">${dateStr}</span></div>`;
+                    // تم تعديل فاصل التاريخ ليصبح مرناً
+                    fullHtml += `<div class="w-full text-center my-4"><span class="bg-white/60 text-gray-600 text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm">${dateStr}</span></div>`;
                     prevUid = null; 
                 }
 
@@ -2164,8 +2165,9 @@
 
                 const nameHtml = (!isSameUser && !isMe) ? `<span class="text-[10px] text-gray-500 mb-0.5 mx-1 font-bold block">${displayName}</span>` : '';
 
+                // تم تعديل حاوية الرسالة هنا
                 fullHtml += `
-                    <div class="w-full flex ${isMe ? 'justify-end' : 'justify-start'} ${marginClass} group chat-msg-enter clear-both float-none" data-raw-text="${safeText}">
+                    <div class="w-full flex ${isMe ? 'justify-end' : 'justify-start'} ${marginClass} group chat-msg-enter relative" data-raw-text="${safeText}">
                         <div class="flex ${isMe ? 'flex-row-reverse' : 'flex-row'} items-end gap-1 max-w-[90%] md:max-w-[75%] relative">
                             ${avatarHtml}
                             <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} w-full relative">
