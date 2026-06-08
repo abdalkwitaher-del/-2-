@@ -33,6 +33,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col relative">
 
@@ -327,6 +328,16 @@
                         <label class="block text-xs font-bold text-gray-600 mb-1">رسالة التحويل الافتراضية (تظهر عند ضغط واتساب للعامل)</label>
                         <textarea id="admin-wa-msg" rows="2" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:border-purple-500 focus:outline-none" placeholder="مثال: مرحباً، لقد وصلت إليك عبر موقع الدلال..."></textarea>
                     </div>
+                    
+                    <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                        <label class="block text-xs font-bold text-purple-800 mb-2">📥 رفع ملف التطبيق (APK) مباشرة لخوادم الموقع</label>
+                        <div class="flex gap-2">
+                            <input type="file" id="admin-app-upload" accept=".apk,.zip,.rar" class="flex-1 px-3 py-2 border border-gray-200 bg-white rounded-lg text-sm focus:border-purple-500">
+                            <button type="button" onclick="uploadAppToStorage()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700 transition">رفع الملف</button>
+                        </div>
+                        <p id="upload-status" class="text-xs text-emerald-600 font-bold mt-2 hidden"></p>
+                    </div>
+
                     <div>
                         <label class="block text-xs font-bold text-gray-600 mb-1">رابط تحميل التطبيق (يُظهر زر التحميل في الشاشة الرئيسية)</label>
                         <input type="url" id="admin-app-link" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-left focus:border-purple-500 focus:outline-none" dir="ltr" placeholder="https://...">
@@ -590,8 +601,9 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const auth = firebase.auth();
+        const storage = firebase.storage(); // تم تفعيل التخزين للرفع
 
-        const ADMIN_PHONE = "774451947"; // تعديل ليصبح عبر رقم الهاتف بدلا من الإيميل
+        const ADMIN_PHONE = "774451947";
         let currentUser = null;
         let currentUserPhone = null; 
         
@@ -636,7 +648,6 @@
             }
         }
 
-        // خدعة: دمج رقم الجوال مع دومين وهمي ليعمل مع نظام الإيميلات في فايربيز
         function getDummyEmail(phone) {
             return phone.trim() + "@aldaleel.app";
         }
@@ -653,11 +664,9 @@
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    // تحديث اسم المستخدم في ملف الشخصي
                     return user.updateProfile({
                         displayName: username
                     }).then(() => {
-                        // حفظ في قاعدة البيانات
                         db.ref('users/' + user.uid).set({
                             name: username,
                             phone: phone,
@@ -703,7 +712,6 @@
         auth.onAuthStateChanged((user) => {
             currentUser = user;
             if (user) {
-                // استخراج رقم الهاتف من الإيميل الوهمي
                 currentUserPhone = user.email.split('@')[0];
             } else {
                 currentUserPhone = null;
@@ -875,7 +883,7 @@
         });
 
         // ==========================================
-        //         الإعدادات العامة (واتساب + رابط التطبيق)
+        //         الإعدادات العامة (واتساب + رابط التطبيق + رفع الملفات)
         // ==========================================
 
         let dynamicWaMsg = "محول من موقع الدلال للعمال";
@@ -914,6 +922,49 @@
                 waMessage: waMsg,
                 appLink: appLink
             }).then(() => alert("تم حفظ الإعدادات بنجاح!"));
+        }
+
+        // دالة رفع التطبيق إلى Firebase Storage للحصول على رابط مباشر
+        function uploadAppToStorage() {
+            if (!currentUser || currentUserPhone !== ADMIN_PHONE) {
+                alert("صلاحيات مرفوضة!"); return;
+            }
+
+            const fileInput = document.getElementById('admin-app-upload');
+            const file = fileInput.files[0];
+            
+            if(!file) { 
+                alert('الرجاء اختيار ملف من جهازك أولاً.'); 
+                return; 
+            }
+
+            const statusEl = document.getElementById('upload-status');
+            statusEl.classList.remove('hidden', 'text-red-600');
+            statusEl.classList.add('text-emerald-600');
+            statusEl.innerText = "جاري الرفع... يرجى الانتظار (0%)";
+
+            // إنشاء مسار في التخزين باسم مميز
+            const storageRef = storage.ref('apps/' + Date.now() + '_' + file.name);
+            const uploadTask = storageRef.put(file);
+
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    statusEl.innerText = `جاري الرفع... يرجى الانتظار (${progress}%)`;
+                }, 
+                (error) => {
+                    statusEl.classList.replace('text-emerald-600', 'text-red-600');
+                    statusEl.innerText = "حدث خطأ أثناء الرفع: " + error.message;
+                }, 
+                () => {
+                    // بمجرد اكتمال الرفع، نحصل على الرابط
+                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        statusEl.innerText = "✅ تم رفع الملف بنجاح! تم وضع الرابط في الخانة بالأسفل، جاري الحفظ...";
+                        document.getElementById('admin-app-link').value = downloadURL;
+                        saveGeneralSettings(); // الحفظ التلقائي للرابط الجديد
+                    });
+                }
+            );
         }
 
         // ==========================================
@@ -1479,10 +1530,9 @@
                     contactHtml = `<span class="block w-full bg-gray-100 text-gray-500 text-center font-bold py-2 rounded-lg text-xs border border-gray-200">🛑 المحل مستكفي حالياً (لا يستقبل اتصالات)</span>`;
                 }
 
-                // زر الموقع (الخريطة) تحديث ليعمل مع بحث الخرائط الرسمي
                 let mapUrl = request.mapLink && request.mapLink.trim() !== '' 
                              ? request.mapLink 
-                             : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(request.bakeryName + ' ' + govLabel)}`;
+                             : `http://googleusercontent.com/maps.google.com/search?q=${encodeURIComponent(request.bakeryName + ' ' + govLabel)}`;
                 
                 let mapBtnHtml = `<a href="${mapUrl}" target="_blank" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-center font-bold py-2 px-4 rounded-lg text-xs transition block border border-emerald-200 mt-2">📍 الموقع على الخريطة</a>`;
 
@@ -1989,7 +2039,6 @@
             document.getElementById('send-message-modal').classList.add('hidden');
             document.getElementById('view-messages-modal').classList.add('hidden');
             document.getElementById('request-notes-modal').classList.add('hidden');
-            // عند الإغلاق نلغي المراقبة لمنع التسريبات
             db.ref('request_notes').off(); 
         }
 
@@ -2062,7 +2111,7 @@
         }
 
         // ==========================================
-        //  نظام إدارة المستخدمين والدردشة العامة
+        //  نظام الدردشة العامة الجديد (بدون تداخل)
         // ==========================================
 
         let chatSettings = { enabled: true, retentionDays: 7 };
@@ -2098,6 +2147,7 @@
             alert("تم حفظ إعدادات الحذف التلقائي بنجاح!");
         }
 
+        // توليد رسائل الدردشة بالتصميم الجديد المباشر
         db.ref('chat_messages').orderByChild('timestamp').on('value', snap => {
             const container = document.getElementById('chat-messages-container');
             if(!container) return;
@@ -2120,35 +2170,30 @@
             }
 
             let fullHtml = '';
-            let prevUid = null; 
+            let prevDate = null; 
 
             messages.forEach((msg, index) => {
                 const isMe = currentUser && currentUser.uid === msg.uid;
                 const timeObj = new Date(msg.timestamp);
                 const timeStr = timeObj.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
-                
                 const dateStr = timeObj.toLocaleDateString('ar-EG');
-                const prevMsgDate = index > 0 ? new Date(messages[index-1].timestamp).toLocaleDateString('ar-EG') : null;
-                if(dateStr !== prevMsgDate) {
-                    // تم تعديل فاصل التاريخ ليصبح مرناً
+                
+                // فاصل التاريخ
+                if(dateStr !== prevDate) {
                     fullHtml += `<div class="w-full text-center my-4"><span class="bg-white/60 text-gray-600 text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm">${dateStr}</span></div>`;
-                    prevUid = null; 
+                    prevDate = dateStr; 
                 }
 
                 const safeText = (msg.text || '').replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
                 const displayName = msg.name || 'مستخدم غير معروف';
 
-                const isSameUser = (prevUid === msg.uid);
-                prevUid = msg.uid;
-
-                const marginClass = isSameUser ? 'mt-1' : 'mt-4';
-
+                // أزرار التحكم مدمجة بداخل الرسالة بأمان تام
                 let controlBtns = '';
                 if (isMe || (currentUser && currentUserPhone === ADMIN_PHONE)) {
                     controlBtns = `
-                        <div class="absolute ${isMe ? 'left-auto -right-10' : 'right-auto -left-10'} top-1 opacity-0 group-hover:opacity-100 transition duration-200 flex flex-col gap-1.5 z-20">
-                            <button onclick="editChatMessage('${msg.id}', this.closest('.group').getAttribute('data-raw-text'))" class="text-[11px] bg-white text-blue-600 rounded-full w-7 h-7 flex justify-center items-center shadow border border-gray-200 hover:bg-blue-50">✏️</button>
-                            <button onclick="deleteChatMessage('${msg.id}')" class="text-[11px] bg-white text-red-600 rounded-full w-7 h-7 flex justify-center items-center shadow border border-gray-200 hover:bg-red-50">🗑️</button>
+                        <div class="flex items-center gap-2">
+                            <button onclick="editChatMessage('${msg.id}', this.closest('.group').getAttribute('data-raw-text'))" class="text-blue-600 hover:text-blue-800" title="تعديل">✏️</button>
+                            <button onclick="deleteChatMessage('${msg.id}')" class="text-red-600 hover:text-red-800" title="حذف">🗑️</button>
                         </div>
                     `;
                 }
@@ -2157,30 +2202,21 @@
                     ? 'bg-[#dcf8c6] rounded-t-xl rounded-br-xl rounded-bl-sm' 
                     : 'bg-white rounded-t-xl rounded-bl-xl rounded-br-sm';
 
-                const avatarHtml = (!isMe && !isSameUser) 
-                    ? `<div class="w-8 h-8 rounded-full shadow-sm border border-gray-200 bg-bakery-200 text-bakery-800 flex items-center justify-center font-bold flex-shrink-0 mr-2">${displayName.charAt(0)}</div>` 
-                    : (!isMe && isSameUser) 
-                        ? `<div class="w-8 h-8 flex-shrink-0 mr-2"></div>` 
-                        : '';
-
-                const nameHtml = (!isSameUser && !isMe) ? `<span class="text-[10px] text-gray-500 mb-0.5 mx-1 font-bold block">${displayName}</span>` : '';
-
-                // تم تعديل حاوية الرسالة هنا
+                // بناء الرسالة ككتلة منفصلة (Block) لمنع التداخل نهائياً
                 fullHtml += `
-                    <div class="w-full flex ${isMe ? 'justify-end' : 'justify-start'} ${marginClass} group chat-msg-enter relative" data-raw-text="${safeText}">
-                        <div class="flex ${isMe ? 'flex-row-reverse' : 'flex-row'} items-end gap-1 max-w-[90%] md:max-w-[75%] relative">
-                            ${avatarHtml}
-                            <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} w-full relative">
-                                ${nameHtml}
-                                <div class="relative px-3 py-2 text-sm text-gray-800 shadow-sm border border-gray-100/50 ${bubbleStyle} w-fit min-w-[80px]">
-                                    <div class="whitespace-pre-wrap break-words leading-relaxed">${safeText}</div>
-                                    <div class="flex items-center justify-end gap-1.5 mt-1 text-[9px] ${isMe ? 'text-green-800/70' : 'text-gray-400'}">
-                                        ${msg.edited ? '<span>(مُعدل)</span>' : ''}
+                    <div class="w-full flex ${isMe ? 'justify-end' : 'justify-start'} mb-4 group chat-msg-enter" data-raw-text="${safeText}">
+                        <div class="max-w-[85%] flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                            ${!isMe ? `<span class="text-[11px] text-gray-500 font-bold mb-1 mx-1 block">${displayName}</span>` : ''}
+                            <div class="relative px-3 py-2 text-sm text-gray-800 shadow-sm ${bubbleStyle} min-w-[120px]">
+                                <div class="whitespace-pre-wrap break-words leading-relaxed">${safeText}</div>
+                                <div class="flex items-center justify-between gap-4 mt-2 pt-1 border-t ${isMe ? 'border-green-200/50' : 'border-gray-100'}">
+                                    <div class="text-[9px] ${isMe ? 'text-green-800/70' : 'text-gray-400'} flex items-center">
+                                        ${msg.edited ? '<span class="mr-1">(مُعدل)</span>' : ''}
                                         <span>${timeStr}</span>
-                                        ${isMe ? '<span class="text-[#53bdeb] text-[13px] leading-none">✓✓</span>' : ''}
+                                        ${isMe ? '<span class="text-[#53bdeb] text-[12px] leading-none ml-1">✓✓</span>' : ''}
                                     </div>
+                                    ${controlBtns}
                                 </div>
-                                ${controlBtns}
                             </div>
                         </div>
                     </div>
@@ -2237,6 +2273,10 @@
                 db.ref('chat_messages/' + id).remove();
             }
         }
+
+        // ==========================================
+        //  نظام إدارة المستخدمين
+        // ==========================================
 
         let aggregatedUsers = new Map();
 
