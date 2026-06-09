@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -10,7 +11,8 @@
             theme: {
                 extend: {
                     colors: {
-                        bakery: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 900: '#78350f' }
+                        bakery: { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 900: '#78350f' },
+                        market: { 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' }
                     }
                 }
             }
@@ -38,12 +40,12 @@
 <body class="text-gray-800 min-h-screen flex flex-col relative">
 
     <header class="bg-white border-b border-amber-100 sticky top-0 z-40 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 h-auto py-2 md:h-16 flex flex-col md:flex-row justify-between md:items-center">
+        <div class="max-w-7xl mx-auto px-4 h-auto py-2 md:h-16 flex flex-col md:flex-row justify-between md:items-center">
             
             <div class="flex justify-between items-center w-full md:w-auto">
                 <div class="flex items-center space-x-2 space-x-reverse cursor-pointer" onclick="showSection('home')">
                     <span class="text-2xl">💼</span>
-                    <h1 class="text-xl font-black text-bakery-700 tracking-wide">دليل العمال الشامل</h1>
+                    <h1 class="text-xl font-black text-bakery-700 tracking-wide">دليل العمال</h1>
                 </div>
                 
                 <div id="auth-container" class="md:hidden">
@@ -53,9 +55,10 @@
             <nav class="flex space-x-2 space-x-reverse overflow-x-auto hide-scrollbar py-2 mt-2 md:mt-0 items-center border-t border-gray-100 md:border-none">
                 <button id="nav-home" onclick="showSection('home')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold bg-bakery-100 text-bakery-700 transition">العمال المتاحين</button>
                 <button id="nav-requests" onclick="showSection('requests')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition">فرص العمل</button>
+                <button id="nav-market" onclick="showSection('market')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition border border-market-500 text-market-700">السوق للبيع 🛒</button>
                 <button id="nav-register" onclick="showSection('register')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition">تسجيل كعامل</button>
                 <button id="nav-add-request" onclick="showSection('add-request')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition">نشر فرصة عمل</button>
-                <button id="nav-chat" onclick="showSection('chat')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition">الدردشة العامة 💬</button>
+                <button id="nav-chat" onclick="showSection('simple-chat')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition">الدردشة العامة 💬</button>
                 <button id="nav-admin" onclick="showSection('admin-ads')" class="hidden shrink-0 px-4 py-2 rounded-full text-sm font-bold text-purple-700 border border-purple-200 bg-purple-50 hover:bg-purple-100 transition">لوحة المدير 👑</button>
                 
                 <div id="auth-container-desktop" class="hidden md:block mr-auto pr-4 border-r border-gray-200">
@@ -64,7 +67,7 @@
         </div>
     </header>
 
-    <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-8 flex flex-col">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 flex flex-col">
 
         <div id="login-alert" class="hidden bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-4 mb-6 text-center shadow-sm">
             <span class="text-xl inline-block mb-1">🔐</span>
@@ -112,7 +115,7 @@
             </div>
 
             <div id="workers-loading-state" class="text-center py-12"><div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-bakery-500 border-t-transparent"></div></div>
-            <div id="workers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            <div id="workers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
             <div id="workers-empty-state" class="hidden text-center py-12 bg-white rounded-xl border border-gray-100 p-6"><h4 class="text-base font-bold text-gray-700">لا يوجد عمال</h4></div>
         </section>
 
@@ -151,6 +154,109 @@
             <div id="requests-loading-state" class="text-center py-12"><div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div></div>
             <div id="requests-container" class="space-y-8"></div>
             <div id="requests-empty-state" class="hidden text-center py-12 bg-white rounded-xl border border-gray-100 p-6"><h4 class="text-base font-bold text-gray-700">لا توجد طلبات متطابقة مع بحثك</h4></div>
+        </section>
+
+        <section id="section-market" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-market-600 to-market-700 rounded-2xl p-6 md:p-10 text-white shadow-md relative overflow-hidden flex flex-col md:flex-row justify-between items-center">
+                <div class="relative z-10 max-w-xl space-y-2 mb-4 md:mb-0">
+                    <span class="bg-market-900/30 text-market-100 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">بيع وشراء</span>
+                    <h2 class="text-2xl md:text-4xl font-black leading-tight">السوق المفتوح لعرض منتجاتك وأجهزتك</h2>
+                    <p class="text-market-100 text-sm mt-2">إلكترونيات، جوالات، مستلزمات محلات والمزيد...</p>
+                </div>
+                <button onclick="showSection('add-market')" class="relative z-10 bg-white text-market-700 hover:bg-gray-50 px-6 py-3 rounded-xl font-black shadow-lg transition transform hover:scale-105 border border-transparent">
+                    ➕ أضف إعلان للبيع
+                </button>
+                <span class="absolute bottom-[-20px] left-4 text-8xl opacity-10 select-none hidden md:block">🛒</span>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm overflow-x-auto hide-scrollbar">
+                <div class="flex gap-2 min-w-max">
+                    <button onclick="filterMarketItems('الكل')" class="market-cat-btn active bg-market-500 text-white px-5 py-2 rounded-full text-sm font-bold transition">الكل</button>
+                    <button onclick="filterMarketItems('إلكترونيات وأجهزة')" class="market-cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition">💻 إلكترونيات وأجهزة</button>
+                    <button onclick="filterMarketItems('جوالات وملحقاتها')" class="market-cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition">📱 جوالات وملحقاتها</button>
+                    <button onclick="filterMarketItems('معدات محلات وعقارات')" class="market-cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition">🏪 معدات محلات وعقارات</button>
+                    <button onclick="filterMarketItems('أخرى')" class="market-cat-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition">📦 أخرى</button>
+                </div>
+            </div>
+
+            <div id="market-loading-state" class="text-center py-12"><div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-market-500 border-t-transparent"></div></div>
+            <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+            <div id="market-empty-state" class="hidden text-center py-12 bg-white rounded-xl border border-gray-100 p-6"><h4 class="text-base font-bold text-gray-700">لا توجد معروضات في هذا القسم حالياً</h4></div>
+        </section>
+
+        <section id="section-add-market" class="hidden max-w-xl mx-auto">
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div class="bg-market-600 p-6 text-white text-center flex items-center justify-between">
+                    <button onclick="showSection('market')" class="text-white hover:text-gray-200 text-2xl font-bold">🡢</button>
+                    <h3 class="text-xl font-black">إضافة إعلان بيع جديد</h3>
+                    <div class="w-8"></div>
+                </div>
+                <form id="market-form" onsubmit="handleMarketSubmit(event)" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">ماذا تريد أن تبيع؟ (اسم المنتج)</label>
+                        <input type="text" id="market-title" required placeholder="مثال: ثلاجة عرض مخبز، جوال آيفون 13..." class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-market-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">القسم</label>
+                            <select id="market-category" required class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white">
+                                <option value="إلكترونيات وأجهزة">إلكترونيات وأجهزة</option>
+                                <option value="جوالات وملحقاتها">جوالات وملحقاتها</option>
+                                <option value="معدات محلات وعقارات">معدات محلات وعقارات</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">السعر (اختياري)</label>
+                            <input type="text" id="market-price" placeholder="مثال: 50,000 ريال" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-market-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">التفاصيل والوصف</label>
+                        <textarea id="market-desc" rows="3" required placeholder="اكتب تفاصيل المنتج، حالته، مدة الاستخدام..." class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-market-500"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">رابط صورة المنتج (URL)</label>
+                        <input type="url" id="market-img" required placeholder="https://..." dir="ltr" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-left focus:outline-none focus:border-market-500">
+                        <p class="text-[10px] text-gray-500 mt-1">قم بنسخ رابط الصورة من أي موقع أو خدمة رفع صور والصقها هنا.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">رقم هاتف التواصل</label>
+                        <input type="tel" id="market-phone" required class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-left focus:outline-none focus:border-market-500" dir="ltr" placeholder="777XXXXXX">
+                    </div>
+                    <button type="submit" id="market-submit-btn" class="w-full bg-market-600 hover:bg-market-700 text-white font-bold py-3 px-4 rounded-xl text-sm transition mt-4 shadow-md">نشر الإعلان في السوق 🚀</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="section-simple-chat" class="hidden max-w-4xl mx-auto w-full flex-grow flex flex-col">
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[75vh]">
+                <div class="bg-[#00a884] p-4 text-white flex justify-between items-center shadow-sm shrink-0">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">💬</span>
+                        <div>
+                            <h3 class="text-base md:text-lg font-bold leading-tight">الدردشة العامة المباشرة</h3>
+                            <p class="text-[10px] md:text-xs text-green-100 mt-0.5">اكتب رسالتك ليتفاعل معك الآخرون</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="simple-chat-container" class="flex-1 overflow-y-auto bg-[#e5ddd5] p-4 space-y-3 flex flex-col">
+                    <div class="text-center text-sm text-gray-500 py-4">جاري تحميل الرسائل...</div>
+                </div>
+
+                <div class="p-3 bg-[#f0f2f5] border-t border-gray-200 shrink-0">
+                    <form onsubmit="sendSimpleChat(event)" class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="simple-chat-name" required placeholder="الاسم..." class="w-full sm:w-1/4 px-4 py-2 text-sm rounded-xl focus:outline-none border border-gray-300">
+                        <div class="flex-1 flex gap-2 w-full">
+                            <input type="text" id="simple-chat-text" required placeholder="اكتب رسالتك هنا..." class="flex-1 px-4 py-2 text-sm rounded-xl focus:outline-none border border-gray-300">
+                            <button type="submit" class="bg-[#00a884] hover:bg-[#008f6f] text-white rounded-xl px-4 flex items-center justify-center font-bold shadow-sm transition">
+                                إرسال
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </section>
 
         <section id="section-register" class="hidden max-w-xl mx-auto">
@@ -332,7 +438,7 @@
                     <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
                         <label class="block text-xs font-bold text-purple-800 mb-2">📥 رفع ملف التطبيق (APK) مباشرة لخوادم الموقع</label>
                         <div class="flex gap-2">
-                            <input type="file" id="admin-app-upload" accept=".apk,.zip,.rar" class="flex-1 px-3 py-2 border border-gray-200 bg-white rounded-lg text-sm focus:border-purple-500">
+                            <input type="file" id="admin-app-upload" accept=".apk,.zip,.rar,.jpg,.png" class="flex-1 px-3 py-2 border border-gray-200 bg-white rounded-lg text-sm focus:border-purple-500">
                             <button type="button" onclick="uploadAppToStorage()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700 transition">رفع الملف</button>
                         </div>
                         <p id="upload-status" class="text-xs text-emerald-600 font-bold mt-2 hidden"></p>
@@ -419,23 +525,6 @@
                 <div id="admin-ads-list" class="space-y-3">
                     </div>
             </div>
-            
-            <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm mt-6">
-                <h4 class="text-lg font-bold mb-4 border-b pb-2">⚙️ إعدادات الدردشة العامة</h4>
-                <div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                    <span class="text-sm font-bold text-gray-700">حالة الدردشة للجميع:</span>
-                    <button id="admin-toggle-chat" onclick="toggleChatStatus()" class="px-4 py-2 rounded-lg text-sm font-bold transition">...</button>
-                </div>
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                    <span class="text-sm font-bold text-gray-700">حذف الرسائل تلقائياً أقدم من:</span>
-                    <select id="admin-chat-retention" onchange="updateChatRetention()" class="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-purple-500">
-                        <option value="1">يوم واحد</option>
-                        <option value="3">3 أيام</option>
-                        <option value="7">أسبوع</option>
-                        <option value="0">عدم الحذف التلقائي</option>
-                    </select>
-                </div>
-            </div>
 
             <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm mt-6">
                 <h4 class="text-lg font-bold mb-4 border-b pb-2">👣 سجل الزيارات المباشرة (من دخل الصفحة)</h4>
@@ -463,39 +552,12 @@
 
     </main>
 
-    <footer class="bg-gray-900 text-gray-400 text-xs py-6 border-t border-gray-800 text-center">
-        <p class="font-bold text-gray-300">📱 تطبيق دليل العمال الشامل السحابي المتكامل</p>
+    <footer class="bg-gray-900 text-gray-400 text-xs py-6 border-t border-gray-800 text-center mt-10">
+        <p class="font-bold text-gray-300">📱 تطبيق دليل العمال الشامل والسوق</p>
         <div class="mt-4 pt-4 border-t border-gray-800 inline-block">
             <p class="text-amber-500 font-bold text-sm">برمجة وتطوير: عبد القوي طاهر | <a href="tel:774451947" dir="ltr">774451947</a></p>
         </div>
     </footer>
-
-    <section id="section-chat" class="hidden fixed inset-0 z-[100] w-full h-full bg-[#e5ddd5] flex-col">
-        <div class="bg-[#00a884] p-4 text-white flex justify-between items-center shadow-sm shrink-0 z-20">
-            <div class="flex items-center gap-3">
-                <button onclick="showSection('home')" class="text-white text-xl hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center transition">🔙</button>
-                <span class="text-2xl">💬</span>
-                <div>
-                    <h3 class="text-base md:text-lg font-bold leading-tight">الدردشة العامة</h3>
-                    <p class="text-[10px] md:text-xs text-green-100 mt-0.5">مساحة حرة لجميع المستخدمين</p>
-                </div>
-            </div>
-            <span id="chat-status-badge" class="text-xs bg-white text-[#00a884] px-3 py-1 rounded-full font-bold shadow-sm">مفتوحة</span>
-        </div>
-        
-        <div id="chat-messages-container" class="flex-1 overflow-y-auto overflow-x-hidden p-4 w-full bg-[#e5ddd5] relative z-10 pb-6 flex flex-col">
-            </div>
-
-        <div id="chat-input-area" class="p-3 bg-[#f0f2f5] flex items-end gap-2 shrink-0 z-20 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-            <textarea id="chat-input" rows="1" placeholder="اكتب رسالتك هنا..." class="flex-1 px-4 py-3 text-sm rounded-xl focus:outline-none shadow-sm border-none resize-none max-h-32 overflow-y-auto" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendChatMessage(); }"></textarea>
-            <button onclick="sendChatMessage()" class="bg-[#00a884] hover:bg-[#008f6f] text-white rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center shadow-sm transition mb-0.5">
-                <span class="transform -rotate-[45deg] mr-1 relative text-xl">🚀</span>
-            </button>
-        </div>
-        <div id="chat-closed-msg" class="hidden p-4 bg-[#f0f2f5] text-center text-gray-500 font-bold text-sm z-20 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] shrink-0">
-            🔒 الدردشة مغلقة حالياً من قبل الإدارة.
-        </div>
-    </section>
 
     <div id="send-message-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[110] flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
@@ -586,7 +648,7 @@
     </div>
 
     <script>
-        // إعدادات فايربيز الحقيقية الخاصة بك:
+        // إعدادات فايربيز (كما هي)
         const firebaseConfig = {
             apiKey: "AIzaSyAvUiAdoW0OjrwuumyAQuAbcR9rdp2i-Sc",
             authDomain: "bakery-workers-44a77.firebaseapp.com",
@@ -601,7 +663,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const auth = firebase.auth();
-        const storage = firebase.storage(); // تم تفعيل التخزين للرفع
+        const storage = firebase.storage();
 
         const ADMIN_PHONE = "774451947";
         let currentUser = null;
@@ -609,6 +671,7 @@
         
         let allWorkers = [];
         let allRequests = [];
+        let allMarketItems = []; // بيانات السوق
         let allAds = []; 
         let workerMsgCounts = {}; 
         
@@ -621,18 +684,16 @@
         let adSlideTimeout; 
 
         // ==========================================
-        //         نظام المصادقة المخصص (رقم وكلمة مرور)
+        //         نظام المصادقة (كما هو)
         // ==========================================
         
         function openAuthModal() {
             document.getElementById('auth-modal').classList.remove('hidden');
             document.getElementById('auth-error-msg').classList.add('hidden');
         }
-        
         function closeAuthModal() {
             document.getElementById('auth-modal').classList.add('hidden');
         }
-        
         function switchAuthTab(tab) {
             document.getElementById('auth-error-msg').classList.add('hidden');
             if(tab === 'login') {
@@ -648,9 +709,7 @@
             }
         }
 
-        function getDummyEmail(phone) {
-            return phone.trim() + "@aldaleel.app";
-        }
+        function getDummyEmail(phone) { return phone.trim() + "@aldaleel.app"; }
 
         function handleCustomRegister(e) {
             e.preventDefault();
@@ -658,20 +717,14 @@
             const phone = document.getElementById('reg-phone').value.trim();
             const password = document.getElementById('reg-password').value.trim();
             const errorEl = document.getElementById('auth-error-msg');
-            
             const email = getDummyEmail(phone);
             
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    return user.updateProfile({
-                        displayName: username
-                    }).then(() => {
+                    return user.updateProfile({ displayName: username }).then(() => {
                         db.ref('users/' + user.uid).set({
-                            name: username,
-                            phone: phone,
-                            role: phone === ADMIN_PHONE ? 'admin' : 'user',
-                            lastLogin: Date.now()
+                            name: username, phone: phone, role: phone === ADMIN_PHONE ? 'admin' : 'user', lastLogin: Date.now()
                         });
                         closeAuthModal();
                     });
@@ -689,7 +742,6 @@
             const phone = document.getElementById('login-phone').value.trim();
             const password = document.getElementById('login-password').value.trim();
             const errorEl = document.getElementById('auth-error-msg');
-            
             const email = getDummyEmail(phone);
             
             auth.signInWithEmailAndPassword(email, password)
@@ -713,13 +765,16 @@
             currentUser = user;
             if (user) {
                 currentUserPhone = user.email.split('@')[0];
+                // تعبئة الاسم التلقائي في الشات لو كان مسجلا
+                const chatNameInput = document.getElementById('simple-chat-name');
+                if(chatNameInput && !chatNameInput.value) chatNameInput.value = user.displayName || currentUserPhone;
             } else {
                 currentUserPhone = null;
             }
-            
             updateAuthUI();
             renderWorkers(allWorkers);
             filterRequests();
+            renderMarketItems(allMarketItems);
             
             if(currentUser && currentUserPhone === ADMIN_PHONE) {
                 document.getElementById('nav-admin').classList.remove('hidden');
@@ -763,402 +818,14 @@
             }
         }
 
-
         // ==========================================
-        //         أداة حقن بيانات المخابز للمدير
+        //         وظائف الأقسام والتبديل بينها
         // ==========================================
-        function injectBakeriesData() {
-            if (!currentUser || currentUserPhone !== ADMIN_PHONE) {
-                alert("عفواً، هذه الميزة متاحة للمدير فقط.");
-                return;
-            }
-            
-            if (!confirm("هل أنت متأكد أنك تريد حقن المخابز الأولية في قاعدة البيانات؟ (الرجاء استخدامها مرة واحدة لتجنب التكرار)")) {
-                return;
-            }
-
-            const preFilledBakeries = [
-                { bakeryName: "مخابز الحديدة المركزية", job: "خباز روتي", phone: "731111111", governorate: "الحديدة", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز تهامة للروتي والكدم", job: "خباز كدم", phone: "732222222", governorate: "الحديدة", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز الساحل الغربي", job: "عجان", phone: "733333333", governorate: "الحديدة", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز عروس البحر الأحمر", job: "مباشر", phone: "734444444", governorate: "الحديدة", status: "يبحث عن عمال" },
-                { bakeryName: "مخابز الزرانيق", job: "طولقي", phone: "735555555", governorate: "الحديدة", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز الحوك الآلي", job: "خباز روتي", phone: "736666666", governorate: "الحديدة", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز الميناء", job: "مساعد خباز", phone: "737777777", governorate: "الحديدة", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز التحرير", job: "محاسب", phone: "738888888", governorate: "الحديدة", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز القدس", job: "عجان", phone: "739999999", governorate: "الحديدة", status: "يبحث عن عمال" },
-                { bakeryName: "مخابز العائلات الحديثة", job: "خباز روتي", phone: "771111111", governorate: "صنعاء", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز وحلويات الشيباني", job: "مشرف مخبز", phone: "772222222", governorate: "صنعاء", status: "يبحث عن عمال" },
-                { bakeryName: "مخابز ريماس", job: "عجان", phone: "773333333", governorate: "صنعاء", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز بيت الخبز", job: "محاسب", phone: "774444444", governorate: "صنعاء", status: "يبحث عن عمال" },
-                { bakeryName: "مخابز العاصمة", job: "خباز كدم", phone: "775555555", governorate: "صنعاء", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز صنعاء القديمة", job: "مساعد خباز", phone: "776666666", governorate: "صنعاء", status: "يبحث عن عمال" },
-                { bakeryName: "مخابز الجندول", job: "طولقي", phone: "777777777", governorate: "صنعاء", status: "يبحث عن عمال" },
-                { bakeryName: "مخبز الشروق الآلي", job: "خباز روتي", phone: "778888888", governorate: "صنعاء", status: "يبحث عن عمال" }
-            ];
-
-            let addedCount = 0;
-            preFilledBakeries.forEach((bakery, index) => {
-                setTimeout(() => {
-                    db.ref('requests').push({
-                        bakeryName: bakery.bakeryName,
-                        sector: "المخابز", 
-                        job: bakery.job,
-                        phone: bakery.phone,
-                        governorate: bakery.governorate,
-                        status: bakery.status,
-                        uid: currentUser.uid,          
-                        email: currentUserPhone,        
-                        timestamp: Date.now() + index  
-                    }).then(() => {
-                        addedCount++;
-                        if (addedCount === preFilledBakeries.length) {
-                            alert(`✅ تم حقن ${addedCount} مخبز بنجاح في قسم فرص العمل! يمكنك الآن تعديل بياناتهم إذا أردت.`);
-                            showSection('requests');
-                        }
-                    }).catch(err => console.error("حدث خطأ أثناء الإضافة:", err));
-                }, index * 50); 
-            });
-        }
-
-
-        // ==========================================
-        //         تتبع الزيارات الشامل
-        // ==========================================
-        const visitsRef = db.ref('site_stats/total_visits');
-
-        if (!sessionStorage.getItem('site_visited')) {
-            visitsRef.transaction(function(currentViews) {
-                return (currentViews || 0) + 1;
-            });
-            
-            db.ref('site_stats/visitors_log').push({
-                timestamp: Date.now(),
-                userAgent: navigator.userAgent
-            });
-
-            sessionStorage.setItem('site_visited', 'true');
-        }
-
-        visitsRef.on('value', (snapshot) => {
-            const countEl = document.getElementById('admin-visitor-count');
-            if(countEl) {
-                countEl.innerText = snapshot.val() || 0;
-            }
-        });
-
-        function getDeviceType(ua) {
-            if(/android/i.test(ua)) return "📱 أندرويد";
-            if(/iphone|ipad|ipod/i.test(ua)) return "📱 آيفون/آيباد";
-            if(/windows/i.test(ua)) return "💻 كمبيوتر ويندوز";
-            if(/mac/i.test(ua)) return "💻 نظام ماك";
-            return "🌐 متصفح غير معروف";
-        }
-
-        db.ref('site_stats/visitors_log').limitToLast(100).on('value', snap => {
-            const logContainer = document.getElementById('admin-visits-log');
-            if(!logContainer) return;
-            
-            if(!snap.exists()) {
-                logContainer.innerHTML = '<p class="text-xs text-gray-500 text-center py-2">لا يوجد سجل زيارات بعد.</p>';
-                return;
-            }
-            
-            let logs = [];
-            snap.forEach(child => logs.push(child.val()));
-            logs.reverse();
-            
-            let html = '';
-            logs.forEach(log => {
-                const date = new Date(log.timestamp).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
-                const device = getDeviceType(log.userAgent);
-                html += `
-                    <div class="flex justify-between items-center bg-gray-50 p-2.5 rounded border border-gray-100 text-xs hover:bg-white hover:shadow-sm transition">
-                        <span class="font-bold text-gray-800">${device}</span>
-                        <span class="text-gray-500">${date}</span>
-                    </div>
-                `;
-            });
-            logContainer.innerHTML = html;
-        });
-
-        // ==========================================
-        //         الإعدادات العامة (واتساب + رابط التطبيق + رفع الملفات)
-        // ==========================================
-
-        let dynamicWaMsg = "محول من موقع الدلال للعمال";
-        let dynamicAppLink = "";
-
-        db.ref('settings/general').on('value', snap => {
-            if(snap.exists()) {
-                const data = snap.val();
-                dynamicWaMsg = data.waMessage || "محول من موقع الدلال للعمال";
-                dynamicAppLink = data.appLink || "";
-                
-                const waInput = document.getElementById('admin-wa-msg');
-                const linkInput = document.getElementById('admin-app-link');
-                if(waInput) waInput.value = dynamicWaMsg;
-                if(linkInput) linkInput.value = dynamicAppLink;
-
-                const heroBtn = document.getElementById('main-download-btn');
-                if(heroBtn) {
-                    if(dynamicAppLink) {
-                        heroBtn.href = dynamicAppLink;
-                        heroBtn.classList.remove('hidden');
-                    } else {
-                        heroBtn.classList.add('hidden');
-                    }
-                }
-
-                if(allWorkers.length > 0) renderWorkers(allWorkers);
-                if(allRequests.length > 0) filterRequests();
-            }
-        });
-
-        function saveGeneralSettings() {
-            const waMsg = document.getElementById('admin-wa-msg').value.trim();
-            const appLink = document.getElementById('admin-app-link').value.trim();
-            db.ref('settings/general').update({
-                waMessage: waMsg,
-                appLink: appLink
-            }).then(() => alert("تم حفظ الإعدادات بنجاح!"));
-        }
-
-        // دالة رفع التطبيق إلى Firebase Storage للحصول على رابط مباشر
-        function uploadAppToStorage() {
-            if (!currentUser || currentUserPhone !== ADMIN_PHONE) {
-                alert("صلاحيات مرفوضة!"); return;
-            }
-
-            const fileInput = document.getElementById('admin-app-upload');
-            const file = fileInput.files[0];
-            
-            if(!file) { 
-                alert('الرجاء اختيار ملف من جهازك أولاً.'); 
-                return; 
-            }
-
-            const statusEl = document.getElementById('upload-status');
-            statusEl.classList.remove('hidden', 'text-red-600');
-            statusEl.classList.add('text-emerald-600');
-            statusEl.innerText = "جاري الرفع... يرجى الانتظار (0%)";
-
-            // إنشاء مسار في التخزين باسم مميز
-            const storageRef = storage.ref('apps/' + Date.now() + '_' + file.name);
-            const uploadTask = storageRef.put(file);
-
-            uploadTask.on('state_changed', 
-                (snapshot) => {
-                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    statusEl.innerText = `جاري الرفع... يرجى الانتظار (${progress}%)`;
-                }, 
-                (error) => {
-                    statusEl.classList.replace('text-emerald-600', 'text-red-600');
-                    statusEl.innerText = "حدث خطأ أثناء الرفع: " + error.message;
-                }, 
-                () => {
-                    // بمجرد اكتمال الرفع، نحصل على الرابط
-                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                        statusEl.innerText = "✅ تم رفع الملف بنجاح! تم وضع الرابط في الخانة بالأسفل، جاري الحفظ...";
-                        document.getElementById('admin-app-link').value = downloadURL;
-                        saveGeneralSettings(); // الحفظ التلقائي للرابط الجديد
-                    });
-                }
-            );
-        }
-
-        // ==========================================
-        //         نظام الأقسام والوظائف الديناميكي
-        // ==========================================
-        
-        const defaultSectorsData = {
-            "المخابز": ["عجان", "خباز روتي", "خباز كدم", "مساعد خباز", "مباشر", "محاسب", "طولقي", "مشرف مخبز"],
-            "المطاعم": ["طباخ", "مساعد طباخ", "مباشر", "محاسب", "عامل نظافة", "كابتن صالة", "مشرف"],
-            "معارض الملابس والتجارة": ["بائع / مبيعات", "كاشير", "منسق بضائع", "حارس أمن", "عامل مخزن", "مدير معرض"],
-            "ورشات وصيانة": ["ميكانيكي", "كهربائي سيارات", "سمكري", "صباغ", "عامل عادي", "فني صيانة"],
-            "مقاولات وبناء": ["بناء", "مليس", "مبلط", "سباك", "كهربائي", "عامل يومية", "مهندس"],
-            "أخرى": ["أعمال إدارية / سكرتارية", "سائق / توصيل", "مندوب مبيعات"]
-        };
-
-        let sectorsData = {};
-
-        db.ref('settings/sectors').on('value', snap => {
-            if(snap.exists()){
-                sectorsData = snap.val();
-            } else {
-                sectorsData = defaultSectorsData;
-                db.ref('settings/sectors').set(sectorsData);
-            }
-            
-            updateSectorDropdown('worker-sector');
-            updateSectorDropdown('request-sector');
-            updateSectorDropdown('filter-sector', true);
-            updateSectorDropdown('filter-request-sector-dropdown', true);
-            
-            updateJobsList('worker-sector', 'worker-job', 'worker-job-custom');
-            updateJobsList('request-sector', 'request-job', 'request-job-custom');
-            updateFilterJobs();
-
-            if(currentUser && currentUserPhone === ADMIN_PHONE){
-                renderAdminSectors();
-            }
-        });
-
-        function updateSectorDropdown(selectId, isFilter = false) {
-            const select = document.getElementById(selectId);
-            if(!select) return;
-            const currentValue = select.value;
-            select.innerHTML = isFilter ? '<option value="">كل الأقسام</option>' : '';
-            
-            Object.keys(sectorsData).forEach(sector => {
-                select.innerHTML += `<option value="${sector}">${sector}</option>`;
-            });
-            if(!isFilter) select.innerHTML += `<option value="أخرى">أخرى</option>`;
-            
-            if(currentValue && Array.from(select.options).some(opt => opt.value === currentValue)) {
-                select.value = currentValue;
-            }
-        }
-
-        function updateJobsList(sectorSelectId, jobSelectId, customInputId) {
-            const sector = document.getElementById(sectorSelectId).value;
-            const jobSelect = document.getElementById(jobSelectId);
-            if(!jobSelect) return;
-            const currentValue = jobSelect.value;
-            
-            jobSelect.innerHTML = ''; 
-            
-            if(sector && sectorsData[sector]) {
-                sectorsData[sector].forEach(job => {
-                    jobSelect.innerHTML += `<option value="${job}">${job}</option>`;
-                });
-            }
-            
-            if(!sectorsData[sector] || !sectorsData[sector].includes("شيء آخر")) {
-                jobSelect.innerHTML += `<option value="شيء آخر">شيء آخر</option>`;
-            }
-
-            if(currentValue && Array.from(jobSelect.options).some(opt => opt.value === currentValue)) {
-                jobSelect.value = currentValue;
-            }
-
-            if(customInputId) {
-                toggleCustomInput(jobSelectId, customInputId);
-            }
-        }
-
-        function updateFilterJobs() {
-            const sector = document.getElementById('filter-sector').value;
-            const jobSelect = document.getElementById('filter-job');
-            if(!jobSelect) return;
-            
-            jobSelect.innerHTML = '<option value="">كل المهن</option>';
-            
-            if(sector && sectorsData[sector]) {
-                sectorsData[sector].forEach(job => {
-                    jobSelect.innerHTML += `<option value="${job}">${job}</option>`;
-                });
-            } else {
-                const allJobs = new Set();
-                Object.values(sectorsData).forEach(jobs => jobs.forEach(j => allJobs.add(j)));
-                allJobs.forEach(job => {
-                    if(job !== "شيء آخر") jobSelect.innerHTML += `<option value="${job}">${job}</option>`;
-                });
-            }
-        }
-
-        function renderAdminSectors() {
-            const container = document.getElementById('admin-sectors-list-container');
-            if(!container) return;
-            container.innerHTML = '';
-
-            Object.keys(sectorsData).forEach(sector => {
-                const jobsHtml = sectorsData[sector].map(job => 
-                    `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-[11px] font-bold flex items-center gap-1 shadow-sm border border-gray-200">
-                        ${job} <button onclick="adminDeleteJob('${sector}', '${job}')" class="text-red-500 hover:text-red-700 ml-1">×</button>
-                    </span>`
-                ).join('');
-
-                container.innerHTML += `
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                        <div class="flex justify-between items-center mb-2 border-b border-gray-200 pb-2">
-                            <h5 class="font-bold text-gray-800 text-sm">📂 ${sector}</h5>
-                            <button onclick="adminDeleteSector('${sector}')" class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded hover:bg-red-200 font-bold shadow-sm">حذف القسم</button>
-                        </div>
-                        <div class="flex flex-wrap gap-1.5 mb-3">${jobsHtml}</div>
-                        <div class="flex gap-2">
-                            <input type="text" id="new-job-${sector}" placeholder="مهنة جديدة..." class="px-2 py-1.5 border border-gray-200 rounded text-xs flex-1">
-                            <button onclick="adminAddJob('${sector}')" class="bg-gray-800 text-white px-3 py-1.5 rounded text-xs hover:bg-gray-900 font-bold">إضافة المهنة</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function adminAddSector() {
-            const name = document.getElementById('admin-new-sector').value.trim();
-            if(!name) return;
-            if(sectorsData[name]) { alert("هذا القسم موجود مسبقاً"); return; }
-            sectorsData[name] = ["عامل"]; 
-            db.ref('settings/sectors').set(sectorsData);
-            document.getElementById('admin-new-sector').value = '';
-        }
-
-        function adminDeleteSector(sector) {
-            if(confirm(`هل أنت متأكد من حذف قسم "${sector}" وجميع المهن التي بداخله؟`)) {
-                delete sectorsData[sector];
-                db.ref('settings/sectors').set(sectorsData);
-            }
-        }
-
-        function adminAddJob(sector) {
-            const jobName = document.getElementById(`new-job-${sector}`).value.trim();
-            if(!jobName) return;
-            if(sectorsData[sector].includes(jobName)) { alert("هذه المهنة موجودة مسبقاً"); return; }
-            sectorsData[sector].push(jobName);
-            db.ref('settings/sectors').set(sectorsData);
-        }
-
-        function adminDeleteJob(sector, job) {
-            if(confirm(`هل أنت متأكد من حذف مهنة "${job}"؟`)) {
-                sectorsData[sector] = sectorsData[sector].filter(j => j !== job);
-                db.ref('settings/sectors').set(sectorsData);
-            }
-        }
-
-        // ==========================================
-
-        document.addEventListener('change', function(e) {
-            if(e.target.name === 'worker-availability') {
-                const contactBox = document.getElementById('allow-contact-container');
-                if (e.target.value === 'مشغول') {
-                    contactBox.classList.remove('hidden');
-                } else {
-                    contactBox.classList.add('hidden');
-                }
-            }
-            if(e.target.name === 'request-status') {
-                const contactBoxReq = document.getElementById('request-allow-contact-container');
-                if (e.target.value === 'مستكفي') {
-                    contactBoxReq.classList.remove('hidden');
-                } else {
-                    contactBoxReq.classList.add('hidden');
-                }
-            }
-        });
-
         function showSection(section) {
-            document.getElementById('section-home').classList.add('hidden');
-            document.getElementById('section-requests-list').classList.add('hidden');
-            document.getElementById('section-register').classList.add('hidden');
-            document.getElementById('section-add-request').classList.add('hidden');
-            document.getElementById('section-admin-ads').classList.add('hidden');
-            
-            document.getElementById('section-chat').classList.add('hidden');
-            document.getElementById('section-chat').classList.remove('flex');
-            document.body.style.overflow = 'auto';
+            const sections = ['section-home', 'section-requests-list', 'section-register', 'section-add-request', 'section-admin-ads', 'section-simple-chat', 'section-market', 'section-add-market'];
+            sections.forEach(s => document.getElementById(s).classList.add('hidden'));
 
-            const navs = ['nav-home', 'nav-requests', 'nav-register', 'nav-add-request', 'nav-admin', 'nav-chat'];
+            const navs = ['nav-home', 'nav-requests', 'nav-register', 'nav-add-request', 'nav-admin', 'nav-chat', 'nav-market'];
             navs.forEach(nav => {
                 if(document.getElementById(nav)) {
                     document.getElementById(nav).className = "shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition";
@@ -1185,1176 +852,700 @@
             } else if (section === 'admin-ads') {
                 document.getElementById('section-admin-ads').classList.remove('hidden');
                 document.getElementById('nav-admin').className = "shrink-0 px-4 py-2 rounded-full text-sm font-bold bg-purple-600 text-white shadow-sm transition";
-            } else if (section === 'chat') {
-                document.getElementById('section-chat').classList.remove('hidden');
-                document.getElementById('section-chat').classList.add('flex');
-                document.body.style.overflow = 'hidden';
+            } else if (section === 'simple-chat') {
+                document.getElementById('section-simple-chat').classList.remove('hidden');
                 document.getElementById('nav-chat').className = "shrink-0 px-4 py-2 rounded-full text-sm font-bold bg-[#e5fcf4] text-[#00a884] transition";
-                setTimeout(() => { const c = document.getElementById('chat-messages-container'); if(c) c.scrollTop = c.scrollHeight; }, 100);
+                setTimeout(() => {
+                    const container = document.getElementById('simple-chat-container');
+                    container.scrollTop = container.scrollHeight;
+                }, 100);
+            } else if (section === 'market') {
+                document.getElementById('section-market').classList.remove('hidden');
+                document.getElementById('nav-market').className = "shrink-0 px-4 py-2 rounded-full text-sm font-bold bg-market-100 text-market-700 border border-market-500 transition";
+            } else if (section === 'add-market') {
+                document.getElementById('section-add-market').classList.remove('hidden');
+                document.getElementById('nav-market').className = "shrink-0 px-4 py-2 rounded-full text-sm font-bold bg-market-100 text-market-700 border border-market-500 transition";
             }
-        }
-
-        function toggleCustomInput(selectId, customInputId) {
-            const selectEl = document.getElementById(selectId);
-            const customEl = document.getElementById(customInputId);
-            if(!selectEl || !customEl) return;
-            if (selectEl.value === 'شيء آخر' || selectEl.value === 'مدينة أخرى') {
-                customEl.classList.remove('hidden'); customEl.required = true;
-            } else {
-                customEl.classList.add('hidden'); customEl.required = false;
-            }
-        }
-
-        function getWaLink(phone) {
-            if(!phone) return '#';
-            let p = phone.trim().replace(/\+/g, '').replace(/^00/, '');
-            if(p.startsWith('7') && p.length === 9) p = '967' + p;
-            return `https://wa.me/${p}?text=${encodeURIComponent(dynamicWaMsg)}`;
-        }
-
-        db.ref('workers').on('value', (snapshot) => {
-            const data = snapshot.val();
-            allWorkers = [];
-            if (data) {
-                Object.keys(data).forEach(key => allWorkers.push({ id: key, ...data[key] }));
-                allWorkers.reverse();
-            }
-            document.getElementById('workers-loading-state').classList.add('hidden');
-            renderWorkers(allWorkers);
-        });
-
-        db.ref('worker_messages').on('value', snap => {
-            workerMsgCounts = {};
-            if(snap.exists()){
-                snap.forEach(child => {
-                    const wId = child.val().workerId;
-                    workerMsgCounts[wId] = (workerMsgCounts[wId] || 0) + 1;
-                });
-            }
-            renderWorkers(allWorkers); 
-        });
-
-        function renderWorkers(dataList) {
-            const grid = document.getElementById('workers-grid');
-            grid.innerHTML = '';
-            if (dataList.length === 0) {
-                document.getElementById('workers-empty-state').classList.remove('hidden');
-            } else {
-                document.getElementById('workers-empty-state').classList.add('hidden');
-                dataList.forEach(worker => {
-                    const statusClass = worker.availability === 'متاح' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200';
-                    const statusDot = worker.availability === 'متاح' ? '🟢' : '🔴';
-                    const sectorLabel = worker.sector ? worker.sector : 'عام';
-                    
-                    const canCall = (worker.availability === 'متاح') || (worker.availability === 'مشغول' && worker.allowContact === 'yes');
-                    
-                    let actionButtons = '';
-                    
-                    if (canCall) {
-                        actionButtons += `
-                            <div class="flex gap-2 mb-2">
-                                <a href="tel:${worker.phone}" class="flex-1 bg-bakery-500 hover:bg-bakery-600 text-white text-center font-bold py-2 px-2 rounded-lg text-xs shadow-sm transition block">📞 اتصال</a>
-                                <a href="${getWaLink(worker.phone)}" target="_blank" class="flex-1 bg-green-500 hover:bg-green-600 text-white text-center font-bold py-2 px-2 rounded-lg text-xs shadow-sm transition block">💬 واتساب</a>
-                            </div>`;
-                        
-                        if(worker.phone2 && worker.phone2.trim() !== '') {
-                            actionButtons += `
-                                <div class="flex gap-2 mb-2">
-                                    <a href="tel:${worker.phone2}" class="flex-1 bg-bakery-400 hover:bg-bakery-500 text-white text-center font-bold py-1.5 px-2 rounded-lg text-xs shadow-sm transition block">📞 إضافي</a>
-                                    <a href="${getWaLink(worker.phone2)}" target="_blank" class="flex-1 bg-green-400 hover:bg-green-500 text-white text-center font-bold py-1.5 px-2 rounded-lg text-xs shadow-sm transition block">💬 واتساب</a>
-                                </div>`;
-                        }
-                    } else {
-                        actionButtons += `<button disabled class="w-full mb-2 bg-gray-100 text-gray-500 text-center font-bold py-2 px-4 rounded-lg text-xs border border-gray-200 cursor-not-allowed block">🔕 غير متاح للاتصال حالياً</button>`;
-                    }
-                    
-                    actionButtons += `<button onclick="openMessageModal('${worker.id}')" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 text-center font-bold py-2 px-4 rounded-lg text-xs shadow-sm transition block border border-blue-200">✉️ اترك رسالة خاصة للعامل</button>`;
-
-                    let controlBtns = '';
-                    if (currentUser && (currentUser.uid === worker.uid || currentUserPhone === ADMIN_PHONE)) {
-                        const msgCount = workerMsgCounts[worker.id] || 0;
-                        const msgDotHtml = msgCount > 0 ? `<span class="absolute -top-1 -right-1 flex h-3.5 w-3.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-600 border border-white"></span></span>` : '';
-
-                        actionButtons += `
-                            <div class="relative w-full mt-2">
-                                <button onclick="openViewMessages('${worker.id}')" class="w-full bg-purple-100 hover:bg-purple-200 text-purple-800 text-center font-bold py-2 px-4 rounded-lg text-xs shadow-sm transition block border border-purple-300">📥 عرض الرسائل الواردة</button>
-                                ${msgDotHtml}
-                            </div>
-                        `;
-                        
-                        controlBtns = `
-                            <div class="flex space-x-2 space-x-reverse mt-3 pt-3 border-t border-gray-100">
-                                <button onclick="editWorker('${worker.id}')" class="flex-1 bg-amber-100 text-amber-700 hover:bg-amber-200 text-xs font-bold py-1.5 rounded">✏️ تعديل</button>
-                                <button onclick="deleteWorker('${worker.id}')" class="flex-1 bg-red-100 text-red-700 hover:bg-red-200 text-xs font-bold py-1.5 rounded">🗑️ حذف</button>
-                            </div>
-                        `;
-                    }
-
-                    const cardHtml = `
-                        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition">
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="text-base font-bold text-gray-900">${worker.name}</h4>
-                                    <span class="text-xs px-2.5 py-0.5 rounded-full font-bold border ${statusClass}">${statusDot} ${worker.availability}</span>
-                                </div>
-                                <div class="flex flex-wrap gap-1.5 pt-1">
-                                    <span class="bg-indigo-50 text-indigo-700 border border-indigo-100 text-[11px] font-bold px-2.5 py-0.5 rounded-md">📂 ${sectorLabel}</span>
-                                    <span class="bg-amber-50 text-amber-800 text-[11px] font-bold px-2.5 py-0.5 rounded-md">👨‍💼 ${worker.job}</span>
-                                    <span class="bg-gray-50 text-gray-600 text-[11px] font-bold px-2.5 py-0.5 rounded-md">📍 ${worker.governorate}</span>
-                                </div>
-                            </div>
-                            <div class="mt-5">
-                                ${actionButtons}
-                                ${controlBtns}
-                            </div>
-                        </div>
-                    `;
-                    grid.insertAdjacentHTML('beforeend', cardHtml);
-                });
-            }
-        }
-
-        function filterWorkers() {
-            const nameQ = document.getElementById('search-name').value.toLowerCase().trim();
-            const sectorF = document.getElementById('filter-sector').value;
-            const jobF = document.getElementById('filter-job').value;
-            const govF = document.getElementById('filter-governorate').value;
-            
-            const filtered = allWorkers.filter(w => {
-                const matchText = w.name.toLowerCase().includes(nameQ) || 
-                                  (w.job && w.job.toLowerCase().includes(nameQ)) || 
-                                  (w.sector && w.sector.toLowerCase().includes(nameQ)) || 
-                                  (w.governorate && w.governorate.toLowerCase().includes(nameQ));
-                
-                const matchSector = sectorF === "" || w.sector === sectorF || (!w.sector && sectorF === "أخرى");
-                const matchJob = jobF === "" || w.job === jobF;
-                const matchGov = govF === "" || w.governorate === govF;
-                
-                return matchText && matchSector && matchJob && matchGov;
-            });
-            renderWorkers(filtered);
-        }
-
-        function handleWorkerSubmit(event) {
-            event.preventDefault();
-            if (!currentUser) { alert("عفواً! يجب تسجيل الدخول أولاً للحفظ."); openAuthModal(); return; }
-
-            const name = document.getElementById('worker-name').value.trim();
-            const sector = document.getElementById('worker-sector').value;
-            let job = document.getElementById('worker-job').value;
-            if (job === 'شيء آخر') job = document.getElementById('worker-job-custom').value.trim();
-            let governorate = document.getElementById('worker-governorate').value;
-            if (governorate === 'مدينة أخرى') governorate = document.getElementById('worker-governorate-custom').value.trim();
-            
-            const phone = document.getElementById('worker-phone').value.trim();
-            const phone2 = document.getElementById('worker-phone2').value.trim(); 
-            
-            const availability = document.querySelector('input[name="worker-availability"]:checked').value;
-            
-            let allowContact = "yes"; 
-            if (availability === 'مشغول') {
-                allowContact = document.querySelector('input[name="worker-allow-contact"]:checked').value;
-            }
-
-            const workerData = {
-                name: name, sector: sector, job: job, phone: phone, phone2: phone2, governorate: governorate, availability: availability, allowContact: allowContact,
-                uid: currentUser.uid, email: currentUserPhone, timestamp: Date.now()
-            };
-
-            if (editingWorkerId) {
-                db.ref('workers/' + editingWorkerId).update(workerData);
-                alert("✅ تم تحديث بياناتك بنجاح!");
-            } else {
-                db.ref('workers').push(workerData);
-                alert("🎉 تم تسجيل بياناتك بنجاح!");
-            }
-            
-            cancelEdit('worker');
-            showSection('home');
-        }
-
-        function deleteWorker(id) {
-            if(confirm("هل أنت متأكد من حذف هذه البطاقة نهائياً؟")) {
-                db.ref('workers/' + id).remove();
-            }
-        }
-
-        function editWorker(id) {
-            const worker = allWorkers.find(w => w.id === id);
-            if(!worker) return;
-            
-            editingWorkerId = id;
-            document.getElementById('worker-name').value = worker.name;
-            document.getElementById('worker-phone').value = worker.phone;
-            document.getElementById('worker-phone2').value = worker.phone2 || ''; 
-            
-            document.querySelector(`input[name="worker-availability"][value="${worker.availability}"]`).checked = true;
-            const contactBox = document.getElementById('allow-contact-container');
-            if(worker.availability === 'مشغول') {
-                contactBox.classList.remove('hidden');
-                document.querySelector(`input[name="worker-allow-contact"][value="${worker.allowContact || 'yes'}"]`).checked = true;
-            } else {
-                contactBox.classList.add('hidden');
-                document.querySelector(`input[name="worker-allow-contact"][value="yes"]`).checked = true; 
-            }
-
-            const sectorSelect = document.getElementById('worker-sector');
-            if (worker.sector && Array.from(sectorSelect.options).some(opt => opt.value === worker.sector)) {
-                sectorSelect.value = worker.sector;
-            } else {
-                sectorSelect.value = 'أخرى';
-            }
-            updateJobsList('worker-sector', 'worker-job', 'worker-job-custom');
-
-            const jobSelect = document.getElementById('worker-job');
-            if (Array.from(jobSelect.options).some(opt => opt.value === worker.job)) {
-                jobSelect.value = worker.job;
-                document.getElementById('worker-job-custom').classList.add('hidden');
-            } else {
-                jobSelect.value = 'شيء آخر';
-                const customJob = document.getElementById('worker-job-custom');
-                customJob.value = worker.job;
-                customJob.classList.remove('hidden');
-            }
-
-            const govSelect = document.getElementById('worker-governorate');
-            if (Array.from(govSelect.options).some(opt => opt.value === worker.governorate)) {
-                govSelect.value = worker.governorate;
-                document.getElementById('worker-governorate-custom').classList.add('hidden');
-            } else {
-                govSelect.value = 'مدينة أخرى';
-                const customGov = document.getElementById('worker-governorate-custom');
-                customGov.value = worker.governorate;
-                customGov.classList.remove('hidden');
-            }
-
-            document.getElementById('worker-edit-mode-msg').classList.remove('hidden');
-            document.getElementById('worker-submit-btn').innerText = "💾 حفظ التحديثات";
-            document.getElementById('worker-submit-btn').classList.replace('bg-bakery-500', 'bg-green-600');
-            document.getElementById('worker-cancel-edit-btn').classList.remove('hidden');
-
-            showSection('register');
             window.scrollTo(0,0);
         }
 
         // ==========================================
-        //         قسم فرص العمل (تعديلات التقسيم والموقع والحالة)
+        //  الدردشة المبسطة (الجديدة) بدلاً من القديمة
         // ==========================================
-
-        db.ref('requests').on('value', (snapshot) => {
-            const data = snapshot.val();
-            allRequests = [];
-            if (data) {
-                Object.keys(data).forEach(key => allRequests.push({ id: key, ...data[key] }));
-                allRequests.reverse();
-            }
-            document.getElementById('requests-loading-state').classList.add('hidden');
-            filterRequests(); 
-        });
-
-        function filterRequests() {
-            const nameQ = document.getElementById('search-request-name').value.toLowerCase().trim();
-            const sectorF = document.getElementById('filter-request-sector-dropdown').value;
-            const govF = document.getElementById('filter-request-governorate').value;
-            
-            const filtered = allRequests.filter(r => {
-                const matchText = r.bakeryName.toLowerCase().includes(nameQ) || 
-                                  (r.job && r.job.toLowerCase().includes(nameQ)) ||
-                                  (r.sector && r.sector.toLowerCase().includes(nameQ));
-                
-                const matchSector = sectorF === "" || r.sector === sectorF || (!r.sector && sectorF === "أخرى");
-                const matchGov = govF === "" || r.governorate === govF;
-                
-                return matchText && matchSector && matchGov;
-            });
-            renderRequests(filtered);
-        }
-
-        function renderRequests(dataList) {
-            const container = document.getElementById('requests-container');
-            container.innerHTML = '';
-            
-            if (dataList.length === 0) {
-                document.getElementById('requests-empty-state').classList.remove('hidden');
-                return;
-            }
-            
-            document.getElementById('requests-empty-state').classList.add('hidden');
-            
-            // ترتيب البيانات: "يبحث عن عمال" أولاً، ثم "مستكفي"
-            dataList.sort((a, b) => {
-                const statusA = a.status || 'يبحث عن عمال';
-                const statusB = b.status || 'يبحث عن عمال';
-                if (statusA === 'يبحث عن عمال' && statusB === 'مستكفي') return -1;
-                if (statusA === 'مستكفي' && statusB === 'يبحث عن عمال') return 1;
-                return 0;
-            });
-
-            container.innerHTML = `<div id="requests-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 mt-4"></div>`;
-            const currentGrid = document.getElementById('requests-grid');
-
-            dataList.forEach(request => {
-                const sectorLabel = request.sector ? request.sector : 'عام';
-                const govLabel = request.governorate ? request.governorate : 'غير محدد';
-                
-                const statusLabel = request.status || 'يبحث عن عمال';
-                const statusClass = statusLabel === 'يبحث عن عمال' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-600 border-gray-200';
-                const statusDot = statusLabel === 'يبحث عن عمال' ? '🟢' : '⚪';
-                
-                let controlBtns = '';
-                if (currentUser && (currentUser.uid === request.uid || currentUserPhone === ADMIN_PHONE)) {
-                    controlBtns = `
-                        <div class="flex space-x-2 space-x-reverse mt-3 pt-3 border-t border-gray-100">
-                            <button onclick="editRequest('${request.id}')" class="flex-1 bg-amber-100 text-amber-700 hover:bg-amber-200 text-xs font-bold py-1.5 rounded">✏️ تعديل</button>
-                            <button onclick="deleteRequest('${request.id}')" class="flex-1 bg-red-100 text-red-700 hover:bg-red-200 text-xs font-bold py-1.5 rounded">🗑️ حذف</button>
-                        </div>
-                    `;
-                }
-
-                // أزرار التواصل (الهاتف)
-                let contactHtml = '';
-                const canCall = (statusLabel === 'يبحث عن عمال') || (statusLabel === 'مستكفي' && request.allowContact === 'yes');
-
-                if (canCall) {
-                    if (request.phone && request.phone.trim() !== '') {
-                        contactHtml = `
-                            <div class="flex gap-2">
-                                <a href="tel:${request.phone}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center font-bold py-2 px-2 rounded-lg text-xs shadow-sm transition block">📞 اتصال</a>
-                                <a href="${getWaLink(request.phone)}" target="_blank" class="flex-1 bg-green-500 hover:bg-green-600 text-white text-center font-bold py-2 px-2 rounded-lg text-xs shadow-sm transition block">💬 واتساب</a>
-                            </div>
-                        `;
-                    } else {
-                        contactHtml = `<span class="block w-full bg-gray-100 text-gray-500 text-center font-bold py-2 rounded-lg text-xs border border-gray-200">📴 الرقم غير متوفر</span>`;
-                    }
-                } else {
-                    contactHtml = `<span class="block w-full bg-gray-100 text-gray-500 text-center font-bold py-2 rounded-lg text-xs border border-gray-200">🛑 المحل مستكفي حالياً (لا يستقبل اتصالات)</span>`;
-                }
-
-                let mapUrl = request.mapLink && request.mapLink.trim() !== '' 
-                             ? request.mapLink 
-                             : `http://googleusercontent.com/maps.google.com/search?q=${encodeURIComponent(request.bakeryName + ' ' + govLabel)}`;
-                
-                let mapBtnHtml = `<a href="${mapUrl}" target="_blank" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-center font-bold py-2 px-4 rounded-lg text-xs transition block border border-emerald-200 mt-2">📍 الموقع على الخريطة</a>`;
-
-                // زر إضافة/عرض الملاحظات
-                let notesBtnHtml = `<button onclick="openNotesModal('${request.id}', '${request.uid}')" class="w-full bg-orange-50 hover:bg-orange-100 text-orange-700 text-center font-bold py-2 px-4 rounded-lg text-xs transition block border border-orange-200 mt-2">📝 ملاحظات الزوار</button>`;
-
-                const cardHtml = `
-                    <div class="bg-white rounded-xl border border-blue-100 shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition border-r-4 ${statusLabel === 'يبحث عن عمال' ? 'border-r-blue-500' : 'border-r-gray-300 opacity-80'} relative">
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-base font-bold text-gray-900 pr-2">🏢 ${request.bakeryName}</h4>
-                                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold border ${statusClass}">${statusDot} ${statusLabel}</span>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5 pt-1">
-                                <span class="bg-indigo-50 text-indigo-700 border border-indigo-100 text-[11px] font-bold px-2.5 py-0.5 rounded-md">📂 ${sectorLabel}</span>
-                                <span class="bg-red-50 text-red-700 border border-red-100 text-[11px] font-bold px-2.5 py-0.5 rounded-md">مطلوب: ${request.job}</span>
-                                <span class="bg-gray-50 text-gray-600 text-[11px] font-bold px-2.5 py-0.5 rounded-md">📍 ${govLabel}</span>
-                            </div>
-                        </div>
-                        <div class="mt-5">
-                            ${contactHtml}
-                            ${mapBtnHtml}
-                            ${notesBtnHtml}
-                            ${controlBtns}
-                        </div>
-                    </div>
-                `;
-                currentGrid.insertAdjacentHTML('beforeend', cardHtml);
-            });
-        }
-
-        function handleBakeryRequestSubmit(event) {
-            event.preventDefault();
-            if (!currentUser) { alert("عفواً! يجب تسجيل الدخول أولاً للحفظ."); openAuthModal(); return; }
-
-            const bakeryName = document.getElementById('bakery-name').value.trim();
-            const sector = document.getElementById('request-sector').value;
-            let job = document.getElementById('request-job').value;
-            if (job === 'شيء آخر') job = document.getElementById('request-job-custom').value.trim();
-            let governorate = document.getElementById('request-governorate').value;
-            if (governorate === 'مدينة أخرى') governorate = document.getElementById('request-governorate-custom').value.trim();
-            
-            const phone = document.getElementById('bakery-phone').value.trim(); 
-            const mapLink = document.getElementById('bakery-map-link').value.trim(); 
-            
-            const status = document.querySelector('input[name="request-status"]:checked').value;
-            
-            let allowContact = "yes";
-            if (status === 'مستكفي') {
-                allowContact = document.querySelector('input[name="request-allow-contact"]:checked').value;
-            }
-
-            const requestData = {
-                bakeryName: bakeryName, sector: sector, job: job, phone: phone, mapLink: mapLink, governorate: governorate, status: status, allowContact: allowContact,
-                uid: currentUser.uid, email: currentUserPhone, timestamp: Date.now()
-            };
-
-            if (editingRequestId) {
-                db.ref('requests/' + editingRequestId).update(requestData);
-                alert("✅ تم تحديث طلب العمل بنجاح!");
-            } else {
-                db.ref('requests').push(requestData);
-                alert("🎉 تم رفع طلب العمل بنجاح!");
-            }
-            
-            cancelEdit('request');
-            showSection('requests');
-        }
-
-        function deleteRequest(id) {
-            if(confirm("هل أنت متأكد من حذف هذا الطلب نهائياً؟")) {
-                db.ref('requests/' + id).remove();
-                // مسح الملاحظات المتعلقة به
-                db.ref('request_notes/' + id).remove();
-            }
-        }
-
-        function editRequest(id) {
-            const req = allRequests.find(r => r.id === id);
-            if(!req) return;
-            
-            editingRequestId = id;
-            document.getElementById('bakery-name').value = req.bakeryName;
-            document.getElementById('bakery-phone').value = req.phone || '';
-            document.getElementById('bakery-map-link').value = req.mapLink || '';
-
-            const reqStatus = req.status || 'يبحث عن عمال';
-            document.querySelector(`input[name="request-status"][value="${reqStatus}"]`).checked = true;
-
-            const contactBoxReq = document.getElementById('request-allow-contact-container');
-            if(reqStatus === 'مستكفي') {
-                contactBoxReq.classList.remove('hidden');
-                document.querySelector(`input[name="request-allow-contact"][value="${req.allowContact || 'no'}"]`).checked = true;
-            } else {
-                contactBoxReq.classList.add('hidden');
-                document.querySelector(`input[name="request-allow-contact"][value="no"]`).checked = true;
-            }
-
-            const sectorSelect = document.getElementById('request-sector');
-            if (req.sector && Array.from(sectorSelect.options).some(opt => opt.value === req.sector)) {
-                sectorSelect.value = req.sector;
-            } else {
-                sectorSelect.value = 'أخرى';
-            }
-            updateJobsList('request-sector', 'request-job', 'request-job-custom');
-
-            const jobSelect = document.getElementById('request-job');
-            if (Array.from(jobSelect.options).some(opt => opt.value === req.job)) {
-                jobSelect.value = req.job;
-                document.getElementById('request-job-custom').classList.add('hidden');
-            } else {
-                jobSelect.value = 'شيء آخر';
-                const customJob = document.getElementById('request-job-custom');
-                customJob.value = req.job;
-                customJob.classList.remove('hidden');
-            }
-
-            const govSelect = document.getElementById('request-governorate');
-            if (Array.from(govSelect.options).some(opt => opt.value === req.governorate)) {
-                govSelect.value = req.governorate;
-                document.getElementById('request-governorate-custom').classList.add('hidden');
-            } else {
-                govSelect.value = 'مدينة أخرى';
-                const customGov = document.getElementById('request-governorate-custom');
-                customGov.value = req.governorate;
-                customGov.classList.remove('hidden');
-            }
-
-            document.getElementById('request-edit-mode-msg').classList.remove('hidden');
-            document.getElementById('request-submit-btn').innerText = "💾 حفظ التحديثات";
-            document.getElementById('request-submit-btn').classList.replace('bg-blue-600', 'bg-green-600');
-            document.getElementById('request-cancel-edit-btn').classList.remove('hidden');
-
-            showSection('add-request');
-            window.scrollTo(0,0);
-        }
-
-        // ==========================================
-        //         نظام ملاحظات المحلات 
-        // ==========================================
-
-        function openNotesModal(requestId, ownerUid) {
-            if(!currentUser) {
-                alert("يرجى تسجيل الدخول لتتمكن من إضافة وقراءة الملاحظات.");
-                openAuthModal();
-                return;
-            }
-
-            document.getElementById('note-request-id').value = requestId;
-            document.getElementById('note-content').value = '';
-            
-            const listContainer = document.getElementById('notes-list-container');
-            const listEl = document.getElementById('notes-list');
-            
-            // تحقق من الصلاحية لعرض سجل الملاحظات
-            if (currentUser.uid === ownerUid || currentUserPhone === ADMIN_PHONE) {
-                listContainer.classList.remove('hidden');
-                listEl.innerHTML = '<p class="text-xs text-gray-500 text-center">جاري التحميل...</p>';
-                
-                // جلب الملاحظات
-                db.ref('request_notes/' + requestId).on('value', snap => {
-                    listEl.innerHTML = '';
-                    if(!snap.exists()) {
-                        listEl.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">لا توجد ملاحظات بعد.</p>';
-                        return;
-                    }
-
-                    let notes = [];
-                    snap.forEach(child => notes.push({id: child.key, ...child.val()}));
-                    notes.reverse(); // الأحدث أولاً
-
-                    notes.forEach(note => {
-                        const date = new Date(note.timestamp).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
-                        listEl.innerHTML += `
-                            <div class="bg-white p-2 rounded border border-gray-200 relative">
-                                <div class="font-bold text-xs text-orange-800 mb-1">👤 ${note.senderName}</div>
-                                <div class="text-xs text-gray-700">${note.content}</div>
-                                <div class="text-[9px] text-gray-400 mt-1">${date}</div>
-                            </div>
-                        `;
-                    });
-                });
-            } else {
-                listContainer.classList.add('hidden');
-            }
-
-            document.getElementById('request-notes-modal').classList.remove('hidden');
-        }
-
-        function submitNote() {
-            if(!currentUser) { alert("يرجى تسجيل الدخول أولاً."); return; }
-            
-            const reqId = document.getElementById('note-request-id').value;
-            const content = document.getElementById('note-content').value.trim();
-
-            if(!content) { alert("الرجاء كتابة الملاحظة."); return; }
-
-            db.ref('request_notes/' + reqId).push({
-                senderUid: currentUser.uid,
-                senderName: currentUser.displayName || currentUserPhone,
-                content: content,
-                timestamp: Date.now()
-            }).then(() => {
-                alert("تم إضافة ملاحظتك بنجاح! سيتم مراجعتها من قبل الإدارة وصاحب الإعلان.");
-                document.getElementById('note-content').value = '';
-                // إغلاق النافذة إذا لم يكن صاحب الإعلان لتجنب الارتباك
-                if(document.getElementById('notes-list-container').classList.contains('hidden')) {
-                    closeModals();
-                }
-            });
-        }
-
-        function cancelEdit(type) {
-            if(type === 'worker') {
-                editingWorkerId = null;
-                document.getElementById('worker-registration-form').reset();
-                updateJobsList('worker-sector', 'worker-job', 'worker-job-custom');
-                document.getElementById('worker-job-custom').classList.add('hidden');
-                document.getElementById('worker-governorate-custom').classList.add('hidden');
-                document.getElementById('allow-contact-container').classList.add('hidden'); 
-                document.getElementById('worker-edit-mode-msg').classList.add('hidden');
-                document.getElementById('worker-cancel-edit-btn').classList.add('hidden');
-                document.getElementById('worker-submit-btn').innerText = "تسجيل بياناتي في الدليل ✨";
-                document.getElementById('worker-submit-btn').classList.replace('bg-green-600', 'bg-bakery-500');
-            } else {
-                editingRequestId = null;
-                document.getElementById('bakery-request-form').reset();
-                updateJobsList('request-sector', 'request-job', 'request-job-custom');
-                document.getElementById('request-job-custom').classList.add('hidden');
-                document.getElementById('request-governorate-custom').classList.add('hidden');
-                document.getElementById('request-allow-contact-container').classList.add('hidden');
-                document.getElementById('request-edit-mode-msg').classList.add('hidden');
-                document.getElementById('request-cancel-edit-btn').classList.add('hidden');
-                document.getElementById('request-submit-btn').innerText = "نشر الطلب الآن 🚀";
-                document.getElementById('request-submit-btn').classList.replace('bg-green-600', 'bg-blue-600');
-            }
-        }
-
-        // ==========================================
-        //         أكواد الإعلانات (للمدير والعرض)
-        // ==========================================
-
-        db.ref('ads').on('value', (snapshot) => {
-            const data = snapshot.val();
-            allAds = [];
-            if (data) {
-                Object.keys(data).forEach(key => allAds.push({ id: key, ...data[key] }));
-            }
-            renderAdsViewer();
-            if (currentUser && currentUserPhone === ADMIN_PHONE) {
-                renderAdminAdsList();
-            }
-        });
-
-        function toggleAdInputType() {
-            const type = document.getElementById('ad-type').value;
-            document.getElementById('ad-image-container').classList.add('hidden');
-            document.getElementById('ad-text-container').classList.add('hidden');
-            document.getElementById('ad-app-container').classList.add('hidden');
-
-            if (type === 'image') {
-                document.getElementById('ad-image-container').classList.remove('hidden');
-            } else if (type === 'text') {
-                document.getElementById('ad-text-container').classList.remove('hidden');
-            } else if (type === 'image_text') {
-                document.getElementById('ad-image-container').classList.remove('hidden');
-                document.getElementById('ad-text-container').classList.remove('hidden');
-            } else if (type === 'app') {
-                document.getElementById('ad-app-container').classList.remove('hidden');
-            }
-        }
-
-        function handleAddAd(event) {
-            event.preventDefault();
-            if (!currentUser || currentUserPhone !== ADMIN_PHONE) {
-                alert("صلاحيات مرفوضة!");
-                return;
-            }
-
-            const type = document.getElementById('ad-type').value;
-            const linkUrl = document.getElementById('ad-link-url').value.trim();
-            const order = parseInt(document.getElementById('ad-order').value) || 1;
-            const duration = parseInt(document.getElementById('ad-duration').value) || 5;
-
-            let adData = { 
-                type: type, 
-                linkUrl: linkUrl, 
-                order: order,
-                duration: duration,
-                timestamp: Date.now() 
-            };
-
-            if (type === 'image') {
-                adData.imageUrl = document.getElementById('ad-image-url').value.trim();
-                if (!adData.imageUrl) { alert("الرجاء إدخال رابط الصورة"); return; }
-            } else if (type === 'text') {
-                adData.textContent = document.getElementById('ad-text-content').value.trim();
-                if (!adData.textContent) { alert("الرجاء إدخال النص الإعلاني"); return; }
-            } else if (type === 'image_text') {
-                adData.imageUrl = document.getElementById('ad-image-url').value.trim();
-                adData.textContent = document.getElementById('ad-text-content').value.trim();
-                if (!adData.imageUrl) { alert("الرجاء إدخال رابط الصورة"); return; }
-                if (!adData.textContent) { alert("الرجاء إدخال النص الإعلاني"); return; }
-            } else if (type === 'app') {
-                adData.appName = document.getElementById('ad-app-name').value.trim();
-                if (!adData.appName) { alert("الرجاء إدخال اسم التطبيق"); return; }
-                if (!adData.linkUrl) { alert("الرجاء إدخال رابط التحميل في خانة 'رابط التوجيه / التحميل'"); return; }
-            }
-
-            if (editingAdId) {
-                db.ref('ads/' + editingAdId).update(adData);
-                alert("تم تعديل الإعلان بنجاح!");
-            } else {
-                db.ref('ads').push(adData);
-                alert("تم إضافة الإعلان بنجاح!");
-            }
-            
-            cancelAdEdit();
-        }
-
-        function editAd(id) {
-            const ad = allAds.find(a => a.id === id);
-            if (!ad) return;
-
-            editingAdId = id;
-            document.getElementById('ad-type').value = ad.type;
-            toggleAdInputType();
-
-            if (ad.type === 'image') {
-                document.getElementById('ad-image-url').value = ad.imageUrl || '';
-            } else if (ad.type === 'text') {
-                document.getElementById('ad-text-content').value = ad.textContent || '';
-            } else if (ad.type === 'image_text') {
-                document.getElementById('ad-image-url').value = ad.imageUrl || '';
-                document.getElementById('ad-text-content').value = ad.textContent || '';
-            } else if (ad.type === 'app') {
-                document.getElementById('ad-app-name').value = ad.appName || '';
-            }
-
-            document.getElementById('ad-link-url').value = ad.linkUrl || '';
-            document.getElementById('ad-order').value = ad.order || 1;
-            document.getElementById('ad-duration').value = ad.duration || 5;
-
-            document.getElementById('ad-edit-mode-msg').classList.remove('hidden');
-            document.getElementById('ad-submit-btn').innerText = "💾 حفظ التعديلات";
-            document.getElementById('ad-submit-btn').classList.replace('bg-purple-600', 'bg-green-600');
-            document.getElementById('ad-cancel-edit-btn').classList.remove('hidden');
-            
-            window.scrollTo(0, document.getElementById('section-admin-ads').offsetTop);
-        }
-
-        function cancelAdEdit() {
-            editingAdId = null;
-            document.getElementById('admin-ad-form').reset();
-            toggleAdInputType();
-            
-            document.getElementById('ad-edit-mode-msg').classList.add('hidden');
-            document.getElementById('ad-submit-btn').innerText = "➕ إضافة الإعلان";
-            document.getElementById('ad-submit-btn').classList.replace('bg-green-600', 'bg-purple-600');
-            document.getElementById('ad-cancel-edit-btn').classList.add('hidden');
-        }
-
-        function deleteAd(id) {
-            if(confirm("هل أنت متأكد من حذف هذا الإعلان نهائياً؟")) {
-                db.ref('ads/' + id).remove();
-            }
-        }
-
-        function renderAdminAdsList() {
-            const list = document.getElementById('admin-ads-list');
-            list.innerHTML = '';
-            
-            if (allAds.length === 0) {
-                list.innerHTML = '<p class="text-sm text-gray-500">لا توجد إعلانات حالياً.</p>';
-                return;
-            }
-
-            const sortedAdminAds = [...allAds].sort((a, b) => (a.order || 1) - (b.order || 1));
-
-            sortedAdminAds.forEach(ad => {
-                let contentHtml = '';
-                if (ad.type === 'image') {
-                    contentHtml = `<div class="flex items-center gap-2"><span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold">صورة</span> <a href="${ad.imageUrl}" target="_blank" class="text-xs text-blue-600 underline truncate max-w-xs block">${ad.imageUrl}</a></div>`;
-                } else if (ad.type === 'text') {
-                    contentHtml = `<div class="flex items-center gap-2"><span class="bg-purple-100 text-purple-700 text-[10px] px-2 py-0.5 rounded font-bold">نص</span> <span class="text-xs text-gray-700 truncate max-w-xs block">${ad.textContent}</span></div>`;
-                } else if (ad.type === 'image_text') {
-                    contentHtml = `<div class="flex items-center gap-2"><span class="bg-indigo-100 text-indigo-700 text-[10px] px-2 py-0.5 rounded font-bold">صورة ونص</span> <span class="text-xs text-gray-700 truncate w-32 block">${ad.textContent}</span> <a href="${ad.imageUrl}" target="_blank" class="text-xs text-blue-600 underline">(صورة)</a></div>`;
-                } else if (ad.type === 'app') {
-                    contentHtml = `<div class="flex items-center gap-2"><span class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold">تطبيق</span> <span class="text-xs text-gray-700 truncate max-w-xs block">تطبيق: ${ad.appName}</span></div>`;
-                }
-
-                const html = `
-                    <div class="flex justify-between items-center p-3 border border-gray-100 bg-gray-50 rounded-lg">
-                        <div class="overflow-hidden">
-                            ${contentHtml}
-                            ${ad.linkUrl ? `<div class="text-[10px] text-gray-500 mt-1">🔗 رابط التوجيه: ${ad.linkUrl}</div>` : ''}
-                            <div class="text-[10px] font-bold text-gray-600 mt-1">ترتيب: ${ad.order || 1} | مدة العرض: ${ad.duration || 5} ثواني</div>
-                        </div>
-                        <div class="flex flex-col gap-1">
-                            <button onclick="editAd('${ad.id}')" class="bg-amber-100 text-amber-600 px-2 py-1 rounded text-xs hover:bg-amber-200">تعديل</button>
-                            <button onclick="deleteAd('${ad.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs hover:bg-red-200">حذف</button>
-                        </div>
-                    </div>
-                `;
-                list.insertAdjacentHTML('beforeend', html);
-            });
-        }
-
-        function renderAdsViewer() {
-            const containerSec = document.getElementById('section-ads-slider');
-            const containerDiv = document.getElementById('ads-container');
-            
-            clearTimeout(adSlideTimeout);
-            clearInterval(adSlideInterval);
-            
-            if (allAds.length === 0) {
-                containerSec.classList.add('hidden');
-                return;
-            }
-
-            allAds.sort((a, b) => (a.order || 1) - (b.order || 1));
-
-            containerSec.classList.remove('hidden');
-            containerDiv.innerHTML = '';
-
-            allAds.forEach((ad, index) => {
-                const isActive = index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0';
-                let innerContent = '';
-
-                if (ad.type === 'image') {
-                    innerContent = `<img src="${ad.imageUrl}" alt="إعلان" class="w-full h-full object-cover">`;
-                } else if (ad.type === 'text') {
-                    innerContent = `<div class="w-full h-full flex items-center justify-center bg-gradient-to-r from-amber-100 to-amber-200 p-4 text-center"><h3 class="text-lg md:text-xl font-bold text-amber-800">${ad.textContent}</h3></div>`;
-                } else if (ad.type === 'image_text') {
-                    innerContent = `
-                        <div class="w-full h-full flex flex-row items-center bg-white">
-                            <div class="w-1/3 h-full">
-                                <img src="${ad.imageUrl}" alt="إعلان" class="w-full h-full object-cover border-l border-gray-200">
-                            </div>
-                            <div class="w-2/3 p-4 flex items-center justify-center text-center bg-gradient-to-l from-indigo-50 to-white">
-                                <h3 class="text-sm md:text-lg font-bold text-indigo-900">${ad.textContent}</h3>
-                            </div>
-                        </div>
-                    `;
-                } else if (ad.type === 'app') {
-                    innerContent = `
-                        <div class="w-full h-full flex items-center justify-between bg-gradient-to-r from-green-500 to-emerald-600 p-4 md:px-8 text-white">
-                            <div class="flex items-center gap-3">
-                                <span class="text-3xl md:text-4xl">📱</span>
-                                <div>
-                                    <h3 class="text-base md:text-lg font-bold">حمل تطبيق ${ad.appName} الآن!</h3>
-                                    <p class="text-[10px] md:text-sm text-green-100 mt-0.5">لتجربة أسرع وأسهل على هاتفك</p>
-                                </div>
-                            </div>
-                            <span class="bg-white text-green-600 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs font-bold shadow-sm hover:bg-gray-50 transition whitespace-nowrap">تحميل 📥</span>
-                        </div>
-                    `;
-                }
-
-                if (ad.linkUrl) {
-                    innerContent = `<a href="${ad.linkUrl}" target="_blank" class="block w-full h-full cursor-pointer">${innerContent}</a>`;
-                }
-
-                const slideHtml = `<div class="slide absolute inset-0 w-full h-full ${isActive}" id="ad-slide-${index}">${innerContent}</div>`;
-                containerDiv.insertAdjacentHTML('beforeend', slideHtml);
-            });
-
-            currentAdIndex = 0;
-            if (allAds.length > 1) {
-                scheduleNextAd();
-            }
-        }
-
-        function scheduleNextAd() {
-            const currentAd = allAds[currentAdIndex];
-            const durationMs = (currentAd.duration || 5) * 1000;
-            
-            adSlideTimeout = setTimeout(showNextAd, durationMs);
-        }
-
-        function showNextAd() {
-            const previousIndex = currentAdIndex;
-            currentAdIndex = (currentAdIndex + 1) % allAds.length;
-            
-            const prevSlide = document.getElementById(`ad-slide-${previousIndex}`);
-            const nextSlide = document.getElementById(`ad-slide-${currentAdIndex}`);
-            
-            if(prevSlide && nextSlide) {
-                prevSlide.classList.remove('opacity-100', 'z-10');
-                prevSlide.classList.add('opacity-0', 'z-0');
-                
-                nextSlide.classList.remove('opacity-0', 'z-0');
-                nextSlide.classList.add('opacity-100', 'z-10');
-            }
-            
-            scheduleNextAd();
-        }
-
-        // ==========================================
-        //         نظام المراسلة الخاصة للعامل
-        // ==========================================
-
-        function closeModals() {
-            document.getElementById('send-message-modal').classList.add('hidden');
-            document.getElementById('view-messages-modal').classList.add('hidden');
-            document.getElementById('request-notes-modal').classList.add('hidden');
-            db.ref('request_notes').off(); 
-        }
-
-        function openMessageModal(workerId) {
-            document.getElementById('msg-worker-id').value = workerId;
-            document.getElementById('msg-sender-name').value = '';
-            document.getElementById('msg-content').value = '';
-            document.getElementById('send-message-modal').classList.remove('hidden');
-        }
-
-        function submitPrivateMessage() {
-            const workerId = document.getElementById('msg-worker-id').value;
-            const senderName = document.getElementById('msg-sender-name').value.trim();
-            const content = document.getElementById('msg-content').value.trim();
-
-            if (!senderName || !content) {
-                alert("الرجاء كتابة اسمك ورسالتك قبل الإرسال.");
-                return;
-            }
-
-            db.ref('worker_messages').push({
-                workerId: workerId,
-                senderName: senderName,
-                content: content,
-                timestamp: Date.now()
-            }).then(() => {
-                alert("✅ تم إرسال رسالتك للعامل بنجاح، ولن يراها أحد غيره.");
-                closeModals();
-            }).catch(err => {
-                alert("❌ حدث خطأ أثناء الإرسال.");
-            });
-        }
-
-        function openViewMessages(workerId) {
-            document.getElementById('view-messages-modal').classList.remove('hidden');
-            const list = document.getElementById('messages-list');
-            list.innerHTML = '<div class="text-center text-sm text-gray-500 py-4"><div class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-purple-500 border-t-transparent mb-2"></div><br>جاري جلب الرسائل...</div>';
-
-            db.ref('worker_messages').orderByChild('workerId').equalTo(workerId).once('value', snapshot => {
-                list.innerHTML = '';
-                if (!snapshot.exists()) {
-                    list.innerHTML = '<div class="text-center text-sm font-bold text-gray-500 py-6 bg-gray-50 rounded-lg">📭 لا توجد رسائل واردة حالياً.</div>';
-                    return;
-                }
-
-                const msgs = [];
-                snapshot.forEach(child => msgs.push({id: child.key, ...child.val()}));
-                msgs.reverse(); 
-
-                msgs.forEach(msg => {
-                    const date = new Date(msg.timestamp).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
-                    list.innerHTML += `
-                        <div class="bg-purple-50 border border-purple-100 rounded-lg p-3 relative">
-                            <button onclick="deleteMessage('${msg.id}', '${workerId}')" class="absolute top-2 left-2 text-red-500 hover:bg-red-100 p-1 rounded text-xs">🗑️</button>
-                            <div class="font-bold text-sm text-purple-900 mb-1">👤 ${msg.senderName}</div>
-                            <div class="text-xs text-gray-700 bg-white p-2 rounded border border-purple-50">${msg.content}</div>
-                            <div class="text-[10px] text-gray-400 mt-2 text-left">${date}</div>
-                        </div>
-                    `;
-                });
-            });
-        }
-
-        function deleteMessage(msgId, workerId) {
-            if(confirm("هل أنت متأكد من حذف هذه الرسالة؟")) {
-                db.ref('worker_messages/' + msgId).remove().then(() => {
-                    openViewMessages(workerId); 
-                });
-            }
-        }
-
-        // ==========================================
-        //  نظام الدردشة العامة الجديد (بدون تداخل)
-        // ==========================================
-
-        let chatSettings = { enabled: true, retentionDays: 7 };
-        let editingChatMessageId = null;
-
-        db.ref('chat_settings').on('value', snap => {
-            if(snap.exists()) chatSettings = snap.val();
-            
-            const badge = document.getElementById('chat-status-badge');
-            if(badge) {
-                badge.innerText = chatSettings.enabled ? 'مفتوحة' : 'مغلقة 🔒';
-                badge.className = chatSettings.enabled ? 'text-[10px] bg-white text-[#00a884] px-3 py-1 rounded-full font-bold shadow-sm' : 'text-[10px] bg-white text-red-600 px-3 py-1 rounded-full font-bold shadow-sm';
-            }
-            
-            document.getElementById('chat-input-area')?.classList.toggle('hidden', !chatSettings.enabled);
-            document.getElementById('chat-closed-msg')?.classList.toggle('hidden', chatSettings.enabled);
-
-            const toggleBtn = document.getElementById('admin-toggle-chat');
-            if(toggleBtn) {
-                toggleBtn.innerText = chatSettings.enabled ? 'إيقاف الدردشة 🔴' : 'تفعيل الدردشة 🟢';
-                toggleBtn.className = chatSettings.enabled ? 'px-4 py-2 rounded-lg text-sm font-bold bg-red-100 text-red-700 transition' : 'px-4 py-2 rounded-lg text-sm font-bold bg-green-100 text-green-700 transition';
-                document.getElementById('admin-chat-retention').value = chatSettings.retentionDays || "0";
-            }
-        });
-
-        function toggleChatStatus() {
-            db.ref('chat_settings').update({ enabled: !chatSettings.enabled });
-        }
-
-        function updateChatRetention() {
-            const days = parseInt(document.getElementById('admin-chat-retention').value);
-            db.ref('chat_settings').update({ retentionDays: days });
-            alert("تم حفظ إعدادات الحذف التلقائي بنجاح!");
-        }
-
-        // توليد رسائل الدردشة بالتصميم الجديد المباشر
-        db.ref('chat_messages').orderByChild('timestamp').on('value', snap => {
-            const container = document.getElementById('chat-messages-container');
+        db.ref('simple_chat_messages').orderByChild('timestamp').limitToLast(50).on('value', snap => {
+            const container = document.getElementById('simple-chat-container');
             if(!container) return;
             
             let isUserAtBottom = (container.scrollHeight - container.scrollTop <= container.clientHeight + 50);
 
             if(!snap.exists()) {
-                container.innerHTML = '<div class="text-center text-gray-500 font-bold text-sm mt-10 w-full block">لا توجد رسائل حالياً. كن أول من يكتب!</div>';
+                container.innerHTML = '<div class="text-center text-gray-500 font-bold text-sm py-10 w-full block">لا توجد رسائل حالياً. كن أول من يكتب!</div>';
                 return;
             }
 
-            let messages = [];
-            snap.forEach(child => messages.push({id: child.key, ...child.val()}));
-            
-            if (currentUser && currentUserPhone === ADMIN_PHONE && chatSettings.retentionDays > 0) {
-                const cutoffTime = Date.now() - (chatSettings.retentionDays * 24 * 60 * 60 * 1000);
-                messages.forEach(msg => {
-                    if (msg.timestamp < cutoffTime) db.ref('chat_messages/' + msg.id).remove();
-                });
-            }
-
-            let fullHtml = '';
-            let prevDate = null; 
-
-            messages.forEach((msg, index) => {
-                const isMe = currentUser && currentUser.uid === msg.uid;
-                const timeObj = new Date(msg.timestamp);
-                const timeStr = timeObj.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
-                const dateStr = timeObj.toLocaleDateString('ar-EG');
+            let html = '';
+            snap.forEach(child => {
+                const msg = child.val();
+                const timeStr = new Date(msg.timestamp).toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
+                const safeText = (msg.text || '').replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+                const safeName = (msg.name || 'مجهول').replace(/</g, '<').replace(/>/g, '>');
                 
-                // فاصل التاريخ
-                if(dateStr !== prevDate) {
-                    fullHtml += `<div class="w-full text-center my-4"><span class="bg-white/60 text-gray-600 text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-sm">${dateStr}</span></div>`;
-                    prevDate = dateStr; 
+                let deleteBtn = '';
+                if(currentUser && currentUserPhone === ADMIN_PHONE) {
+                    deleteBtn = `<button onclick="deleteSimpleChat('${child.key}')" class="text-red-500 hover:text-red-700 text-xs mr-2">🗑️ حذف</button>`;
                 }
 
-                const safeText = (msg.text || '').replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
-                const displayName = msg.name || 'مستخدم غير معروف';
-
-                // أزرار التحكم مدمجة بداخل الرسالة بأمان تام
-                let controlBtns = '';
-                if (isMe || (currentUser && currentUserPhone === ADMIN_PHONE)) {
-                    controlBtns = `
-                        <div class="flex items-center gap-2">
-                            <button onclick="editChatMessage('${msg.id}', this.closest('.group').getAttribute('data-raw-text'))" class="text-blue-600 hover:text-blue-800" title="تعديل">✏️</button>
-                            <button onclick="deleteChatMessage('${msg.id}')" class="text-red-600 hover:text-red-800" title="حذف">🗑️</button>
+                html += `
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 relative group chat-msg-enter flex flex-col">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-sm text-[#00a884]">👤 ${safeName}</span>
+                            <span class="text-[10px] text-gray-400">${timeStr}</span>
                         </div>
-                    `;
+                        <div class="text-gray-800 text-sm whitespace-pre-wrap break-words">${safeText}</div>
+                        ${deleteBtn ? `<div class="absolute top-2 left-2 hidden group-hover:block">${deleteBtn}</div>` : ''}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            
+            if(isUserAtBottom) {
+                setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
+            }
+        });
+
+        function sendSimpleChat(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('simple-chat-name');
+            const textInput = document.getElementById('simple-chat-text');
+            const name = nameInput.value.trim();
+            const text = textInput.value.trim();
+            
+            if(!name || !text) return;
+            
+            db.ref('simple_chat_messages').push({
+                name: name,
+                text: text,
+                timestamp: Date.now()
+            });
+            textInput.value = '';
+            
+            setTimeout(() => {
+                const container = document.getElementById('simple-chat-container');
+                container.scrollTop = container.scrollHeight;
+            }, 100);
+        }
+
+        function deleteSimpleChat(id) {
+            if(confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
+                db.ref('simple_chat_messages/' + id).remove();
+            }
+        }
+
+
+        // ==========================================
+        //         قسم السوق والمبيعات (الجديد)
+        // ==========================================
+        let currentMarketFilter = 'الكل';
+
+        db.ref('market_items').on('value', snap => {
+            allMarketItems = [];
+            if(snap.exists()){
+                snap.forEach(child => allMarketItems.push({id: child.key, ...child.val()}));
+                allMarketItems.reverse(); // الأحدث أولاً
+            }
+            document.getElementById('market-loading-state').classList.add('hidden');
+            renderMarketItems(allMarketItems);
+        });
+
+        function filterMarketItems(category) {
+            currentMarketFilter = category;
+            
+            // تحديث تصميم أزرار الفلترة
+            document.querySelectorAll('.market-cat-btn').forEach(btn => {
+                if(btn.innerText.includes(category) || (category === 'الكل' && btn.innerText === 'الكل')) {
+                    btn.classList.remove('bg-gray-100', 'text-gray-700');
+                    btn.classList.add('bg-market-500', 'text-white');
+                } else {
+                    btn.classList.remove('bg-market-500', 'text-white');
+                    btn.classList.add('bg-gray-100', 'text-gray-700');
+                }
+            });
+
+            if (category === 'الكل') {
+                renderMarketItems(allMarketItems);
+            } else {
+                const filtered = allMarketItems.filter(item => item.category === category);
+                renderMarketItems(filtered);
+            }
+        }
+
+        function renderMarketItems(dataList) {
+            const grid = document.getElementById('market-grid');
+            grid.innerHTML = '';
+            
+            if(dataList.length === 0) {
+                document.getElementById('market-empty-state').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('market-empty-state').classList.add('hidden');
+
+            dataList.forEach(item => {
+                const date = new Date(item.timestamp).toLocaleDateString('ar-EG');
+                let deleteBtn = '';
+                if(currentUser && (currentUser.uid === item.uid || currentUserPhone === ADMIN_PHONE)) {
+                    deleteBtn = `<button onclick="deleteMarketItem('${item.id}')" class="absolute top-2 left-2 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow hover:bg-red-600 transition z-10 text-xs">🗑️</button>`;
                 }
 
-                const bubbleStyle = isMe 
-                    ? 'bg-[#dcf8c6] rounded-t-xl rounded-br-xl rounded-bl-sm' 
-                    : 'bg-white rounded-t-xl rounded-bl-xl rounded-br-sm';
+                // تصحيح رقم الهاتف للواتساب
+                let phone = item.phone.trim().replace(/\+/g, '').replace(/^00/, '');
+                if(phone.startsWith('7') && phone.length === 9) phone = '967' + phone;
 
-                // بناء الرسالة ككتلة منفصلة (Block) لمنع التداخل نهائياً
-                fullHtml += `
-                    <div class="w-full flex ${isMe ? 'justify-end' : 'justify-start'} mb-4 group chat-msg-enter" data-raw-text="${safeText}">
-                        <div class="max-w-[85%] flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-                            ${!isMe ? `<span class="text-[11px] text-gray-500 font-bold mb-1 mx-1 block">${displayName}</span>` : ''}
-                            <div class="relative px-3 py-2 text-sm text-gray-800 shadow-sm ${bubbleStyle} min-w-[120px]">
-                                <div class="whitespace-pre-wrap break-words leading-relaxed">${safeText}</div>
-                                <div class="flex items-center justify-between gap-4 mt-2 pt-1 border-t ${isMe ? 'border-green-200/50' : 'border-gray-100'}">
-                                    <div class="text-[9px] ${isMe ? 'text-green-800/70' : 'text-gray-400'} flex items-center">
-                                        ${msg.edited ? '<span class="mr-1">(مُعدل)</span>' : ''}
-                                        <span>${timeStr}</span>
-                                        ${isMe ? '<span class="text-[#53bdeb] text-[12px] leading-none ml-1">✓✓</span>' : ''}
-                                    </div>
-                                    ${controlBtns}
+                grid.innerHTML += `
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:-translate-y-1 hover:shadow-lg transition duration-300 flex flex-col relative">
+                        ${deleteBtn}
+                        <div class="h-48 w-full bg-gray-100 relative">
+                            <img src="${item.imgUrl}" onerror="this.src='https://via.placeholder.com/400x300?text=لا+توجد+صورة'" class="w-full h-full object-cover">
+                            <div class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded backdrop-blur-sm">${date}</div>
+                        </div>
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-2 gap-2">
+                                <h3 class="font-bold text-base text-gray-800 leading-tight">${item.title}</h3>
+                                ${item.price ? `<span class="bg-green-100 text-green-700 font-bold px-2 py-1 rounded text-xs whitespace-nowrap">${item.price}</span>` : ''}
+                            </div>
+                            <p class="text-xs text-gray-500 mb-4 flex-grow leading-relaxed break-words line-clamp-3">${item.desc}</p>
+                            
+                            <div class="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
+                                <span class="text-[10px] bg-market-50 text-market-700 px-2 py-1 rounded font-bold">${item.category}</span>
+                                <div class="flex gap-1">
+                                    <a href="tel:${item.phone}" class="bg-market-600 hover:bg-market-700 text-white text-[11px] px-3 py-1.5 rounded-lg font-bold transition">📞 اتصال</a>
+                                    <a href="https://wa.me/${phone}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white text-[11px] px-3 py-1.5 rounded-lg font-bold transition">💬</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
             });
-            
-            container.innerHTML = fullHtml;
-            
-            if(isUserAtBottom || messages.length === 0) {
-                setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
-            }
-        });
-
-        function sendChatMessage() {
-            if (!currentUser) { alert('عفواً! يجب تسجيل الدخول للمشاركة في الدردشة.'); openAuthModal(); return; }
-            
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            if (editingChatMessageId) {
-                db.ref('chat_messages/' + editingChatMessageId).update({ text: text, edited: true });
-                editingChatMessageId = null;
-                input.placeholder = "اكتب رسالتك هنا...";
-                input.style.height = ''; 
-            } else {
-                db.ref('chat_messages').push({
-                    uid: currentUser.uid,
-                    name: currentUser.displayName || currentUserPhone,
-                    photo: '',
-                    text: text,
-                    timestamp: Date.now(),
-                    edited: false
-                });
-            }
-            input.value = '';
-            input.style.height = ''; 
-            
-            const container = document.getElementById('chat-messages-container');
-            setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
         }
 
-        function editChatMessage(id, oldText) {
-            const input = document.getElementById('chat-input');
-            input.value = oldText;
-            input.placeholder = "تعديل الرسالة...";
-            input.style.height = input.scrollHeight + 'px';
-            input.focus();
-            editingChatMessageId = id;
-        }
+        function handleMarketSubmit(e) {
+            e.preventDefault();
+            if(!currentUser) { alert("يجب تسجيل الدخول لنشر إعلان في السوق."); openAuthModal(); return; }
 
-        function deleteChatMessage(id) {
-            if(confirm('هل أنت متأكد من حذف هذه الرسالة من الجميع؟')) {
-                db.ref('chat_messages/' + id).remove();
-            }
-        }
+            const title = document.getElementById('market-title').value.trim();
+            const category = document.getElementById('market-category').value;
+            const price = document.getElementById('market-price').value.trim();
+            const desc = document.getElementById('market-desc').value.trim();
+            const imgUrl = document.getElementById('market-img').value.trim();
+            const phone = document.getElementById('market-phone').value.trim();
 
-        // ==========================================
-        //  نظام إدارة المستخدمين
-        // ==========================================
-
-        let aggregatedUsers = new Map();
-
-        function renderAdminUsersList() {
-            const list = document.getElementById('admin-users-list');
-            const count = document.getElementById('admin-users-count');
-            if(!list || !count) return;
-
-            if(aggregatedUsers.size === 0) {
-                count.innerText = '0';
-                list.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">لا يوجد مستخدمين مسجلين بعد.</p>';
-                return;
-            }
-
-            count.innerText = aggregatedUsers.size;
-            list.innerHTML = '';
-
-            const sortedUsers = Array.from(aggregatedUsers.values()).sort((a,b) => (b.lastActivity || 0) - (a.lastActivity || 0));
-
-            sortedUsers.forEach(u => {
-                const lastSeen = u.lastActivity ? new Date(u.lastActivity).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' }) : 'غير محدد';
-                list.innerHTML += `
-                    <div class="flex items-center gap-3 p-3 border border-gray-100 rounded-lg bg-gray-50 hover:bg-white hover:shadow-sm transition">
-                        <div class="w-10 h-10 rounded-full border border-gray-200 bg-gray-200 flex items-center justify-center font-bold text-gray-600 shrink-0">
-                            ${u.name ? u.name.charAt(0) : '👤'}
-                        </div>
-                        <div class="flex-1 overflow-hidden">
-                            <div class="font-bold text-sm text-gray-800 truncate">${u.name || 'مستخدم غير معروف'}</div>
-                            <div class="text-[11px] text-gray-500 truncate">${u.phone || 'بدون رقم'}</div>
-                            <div class="text-[9px] text-purple-600 font-bold mt-0.5">المصدر: ${u.source}</div>
-                        </div>
-                        <div class="text-[10px] text-gray-400 bg-white px-2 py-1 rounded border border-gray-100 shrink-0 text-center">
-                            آخر نشاط:<br>${lastSeen}
-                        </div>
-                    </div>
-                `;
+            db.ref('market_items').push({
+                title, category, price, desc, imgUrl, phone,
+                uid: currentUser.uid,
+                timestamp: Date.now()
+            }).then(() => {
+                alert("🎉 تم نشر منتجك في السوق بنجاح!");
+                document.getElementById('market-form').reset();
+                showSection('market');
+                filterMarketItems('الكل');
             });
         }
 
-        db.ref('users').on('value', snap => {
+        function deleteMarketItem(id) {
+            if(confirm("هل أنت متأكد من حذف هذا الإعلان من السوق نهائياً؟")) {
+                db.ref('market_items/' + id).remove();
+            }
+        }
+
+
+        // ==========================================
+        //  (باقي الأكواد للحفاظ على الوظائف السابقة)
+        // ==========================================
+
+        function injectBakeriesData() {
+            if (!currentUser || currentUserPhone !== ADMIN_PHONE) {
+                alert("عفواً، هذه الميزة متاحة للمدير فقط."); return;
+            }
+            if (!confirm("هل أنت متأكد من حقن البيانات الأساسية؟")) return;
+            const preFilledBakeries = [
+                { bakeryName: "مخابز الحديدة المركزية", job: "خباز روتي", phone: "731111111", governorate: "الحديدة", status: "يبحث عن عمال" },
+                { bakeryName: "مخابز العائلات الحديثة", job: "خباز روتي", phone: "771111111", governorate: "صنعاء", status: "يبحث عن عمال" }
+            ];
+            let addedCount = 0;
+            preFilledBakeries.forEach((bakery, index) => {
+                setTimeout(() => {
+                    db.ref('requests').push({
+                        bakeryName: bakery.bakeryName, sector: "المخابز", job: bakery.job, phone: bakery.phone, governorate: bakery.governorate, status: bakery.status, uid: currentUser.uid, email: currentUserPhone, timestamp: Date.now() + index  
+                    }).then(() => {
+                        addedCount++;
+                        if (addedCount === preFilledBakeries.length) {
+                            alert("تم الحقن بنجاح."); showSection('requests');
+                        }
+                    });
+                }, index * 50); 
+            });
+        }
+
+        const visitsRef = db.ref('site_stats/total_visits');
+        if (!sessionStorage.getItem('site_visited')) {
+            visitsRef.transaction(currentViews => (currentViews || 0) + 1);
+            db.ref('site_stats/visitors_log').push({ timestamp: Date.now(), userAgent: navigator.userAgent });
+            sessionStorage.setItem('site_visited', 'true');
+        }
+        visitsRef.on('value', snap => {
+            const countEl = document.getElementById('admin-visitor-count');
+            if(countEl) countEl.innerText = snap.val() || 0;
+        });
+
+        function getDeviceType(ua) {
+            if(/android/i.test(ua)) return "📱 أندرويد";
+            if(/iphone|ipad|ipod/i.test(ua)) return "📱 آيفون/آيباد";
+            if(/windows/i.test(ua)) return "💻 كمبيوتر ويندوز";
+            if(/mac/i.test(ua)) return "💻 نظام ماك";
+            return "🌐 متصفح غير معروف";
+        }
+
+        db.ref('site_stats/visitors_log').limitToLast(100).on('value', snap => {
+            const logContainer = document.getElementById('admin-visits-log');
+            if(!logContainer || !snap.exists()) return;
+            let logs = []; snap.forEach(child => logs.push(child.val())); logs.reverse();
+            let html = '';
+            logs.forEach(log => {
+                const date = new Date(log.timestamp).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
+                const device = getDeviceType(log.userAgent);
+                html += `<div class="flex justify-between items-center bg-gray-50 p-2.5 rounded border border-gray-100 text-xs hover:bg-white hover:shadow-sm transition"><span class="font-bold text-gray-800">${device}</span><span class="text-gray-500">${date}</span></div>`;
+            });
+            logContainer.innerHTML = html;
+        });
+
+        let dynamicWaMsg = "محول من موقع الدلال للعمال";
+        let dynamicAppLink = "";
+
+        db.ref('settings/general').on('value', snap => {
             if(snap.exists()) {
-                snap.forEach(child => {
-                    const data = child.val();
-                    aggregatedUsers.set(child.key, {
-                        uid: child.key, name: data.name, phone: data.phone, lastActivity: data.lastLogin, source: 'حساب مسجل بالموقع'
+                const data = snap.val();
+                dynamicWaMsg = data.waMessage || "محول من موقع الدلال للعمال";
+                dynamicAppLink = data.appLink || "";
+                
+                const waInput = document.getElementById('admin-wa-msg');
+                const linkInput = document.getElementById('admin-app-link');
+                if(waInput) waInput.value = dynamicWaMsg;
+                if(linkInput) linkInput.value = dynamicAppLink;
+
+                const heroBtn = document.getElementById('main-download-btn');
+                if(heroBtn) {
+                    if(dynamicAppLink) { heroBtn.href = dynamicAppLink; heroBtn.classList.remove('hidden'); } 
+                    else heroBtn.classList.add('hidden');
+                }
+            }
+        });
+
+        function saveGeneralSettings() {
+            db.ref('settings/general').update({
+                waMessage: document.getElementById('admin-wa-msg').value.trim(),
+                appLink: document.getElementById('admin-app-link').value.trim()
+            }).then(() => alert("تم حفظ الإعدادات بنجاح!"));
+        }
+
+        function uploadAppToStorage() {
+            if (!currentUser || currentUserPhone !== ADMIN_PHONE) return;
+            const file = document.getElementById('admin-app-upload').files[0];
+            if(!file) { alert('الرجاء اختيار ملف من جهازك أولاً.'); return; }
+
+            const statusEl = document.getElementById('upload-status');
+            statusEl.classList.remove('hidden', 'text-red-600'); statusEl.classList.add('text-emerald-600');
+            statusEl.innerText = "جاري الرفع... يرجى الانتظار (0%)";
+
+            const uploadTask = storage.ref('apps/' + Date.now() + '_' + file.name).put(file);
+            uploadTask.on('state_changed', 
+                (snapshot) => { statusEl.innerText = `جاري الرفع... يرجى الانتظار (${Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)}%)`; }, 
+                (error) => { statusEl.classList.replace('text-emerald-600', 'text-red-600'); statusEl.innerText = "حدث خطأ: " + error.message; }, 
+                () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        statusEl.innerText = "✅ تم الرفع بنجاح!";
+                        document.getElementById('admin-app-link').value = downloadURL;
+                        saveGeneralSettings();
+                    });
+                }
+            );
+        }
+
+        const defaultSectorsData = {
+            "المخابز": ["عجان", "خباز روتي", "خباز كدم", "مساعد خباز", "مباشر", "محاسب", "طولقي", "مشرف مخبز"],
+            "المطاعم": ["طباخ", "مساعد طباخ", "مباشر", "محاسب", "عامل نظافة", "كابتن صالة", "مشرف"],
+            "معارض الملابس والتجارة": ["بائع / مبيعات", "كاشير", "منسق بضائع", "حارس أمن", "عامل مخزن", "مدير معرض"],
+            "ورشات وصيانة": ["ميكانيكي", "كهربائي سيارات", "سمكري", "صباغ", "عامل عادي", "فني صيانة"],
+            "مقاولات وبناء": ["بناء", "مليس", "مبلط", "سباك", "كهربائي", "عامل يومية", "مهندس"],
+            "أخرى": ["أعمال إدارية / سكرتارية", "سائق / توصيل", "مندوب مبيعات"]
+        };
+        let sectorsData = {};
+
+        db.ref('settings/sectors').on('value', snap => {
+            sectorsData = snap.exists() ? snap.val() : defaultSectorsData;
+            if(!snap.exists()) db.ref('settings/sectors').set(sectorsData);
+            
+            updateSectorDropdown('worker-sector'); updateSectorDropdown('request-sector');
+            updateSectorDropdown('filter-sector', true); updateSectorDropdown('filter-request-sector-dropdown', true);
+            updateJobsList('worker-sector', 'worker-job', 'worker-job-custom');
+            updateJobsList('request-sector', 'request-job', 'request-job-custom');
+            updateFilterJobs();
+            if(currentUser && currentUserPhone === ADMIN_PHONE) renderAdminSectors();
+        });
+
+        function updateSectorDropdown(selectId, isFilter = false) {
+            const select = document.getElementById(selectId); if(!select) return;
+            const currentValue = select.value;
+            select.innerHTML = isFilter ? '<option value="">كل الأقسام</option>' : '';
+            Object.keys(sectorsData).forEach(s => select.innerHTML += `<option value="${s}">${s}</option>`);
+            if(!isFilter) select.innerHTML += `<option value="أخرى">أخرى</option>`;
+            if(currentValue && Array.from(select.options).some(o => o.value === currentValue)) select.value = currentValue;
+        }
+
+        function updateJobsList(sectorSelectId, jobSelectId, customInputId) {
+            const sector = document.getElementById(sectorSelectId).value;
+            const jobSelect = document.getElementById(jobSelectId); if(!jobSelect) return;
+            const currentValue = jobSelect.value;
+            jobSelect.innerHTML = ''; 
+            
+            if(sector && sectorsData[sector]) sectorsData[sector].forEach(j => jobSelect.innerHTML += `<option value="${j}">${j}</option>`);
+            if(!sectorsData[sector] || !sectorsData[sector].includes("شيء آخر")) jobSelect.innerHTML += `<option value="شيء آخر">شيء آخر</option>`;
+            if(currentValue && Array.from(jobSelect.options).some(o => o.value === currentValue)) jobSelect.value = currentValue;
+            if(customInputId) toggleCustomInput(jobSelectId, customInputId);
+        }
+
+        function updateFilterJobs() {
+            const sector = document.getElementById('filter-sector').value;
+            const jobSelect = document.getElementById('filter-job'); if(!jobSelect) return;
+            jobSelect.innerHTML = '<option value="">كل المهن</option>';
+            if(sector && sectorsData[sector]) {
+                sectorsData[sector].forEach(j => jobSelect.innerHTML += `<option value="${j}">${j}</option>`);
+            } else {
+                const allJobs = new Set(); Object.values(sectorsData).forEach(jobs => jobs.forEach(j => allJobs.add(j)));
+                allJobs.forEach(job => { if(job !== "شيء آخر") jobSelect.innerHTML += `<option value="${job}">${job}</option>`; });
+            }
+        }
+
+        function renderAdminSectors() {
+            const container = document.getElementById('admin-sectors-list-container'); if(!container) return;
+            container.innerHTML = '';
+            Object.keys(sectorsData).forEach(sector => {
+                const jobsHtml = sectorsData[sector].map(job => `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-[11px] font-bold flex items-center gap-1 border border-gray-200">${job} <button onclick="adminDeleteJob('${sector}', '${job}')" class="text-red-500 ml-1">×</button></span>`).join('');
+                container.innerHTML += `
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                        <div class="flex justify-between items-center mb-2 border-b border-gray-200 pb-2"><h5 class="font-bold text-sm">📂 ${sector}</h5><button onclick="adminDeleteSector('${sector}')" class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded font-bold">حذف القسم</button></div>
+                        <div class="flex flex-wrap gap-1.5 mb-3">${jobsHtml}</div>
+                        <div class="flex gap-2"><input type="text" id="new-job-${sector}" placeholder="مهنة جديدة..." class="px-2 py-1.5 border border-gray-200 rounded text-xs flex-1"><button onclick="adminAddJob('${sector}')" class="bg-gray-800 text-white px-3 py-1.5 rounded text-xs font-bold">إضافة</button></div>
+                    </div>`;
+            });
+        }
+        function adminAddSector() {
+            const n = document.getElementById('admin-new-sector').value.trim(); if(!n || sectorsData[n]) return;
+            sectorsData[n] = ["عامل"]; db.ref('settings/sectors').set(sectorsData); document.getElementById('admin-new-sector').value = '';
+        }
+        function adminDeleteSector(s) { if(confirm("حذف؟")) { delete sectorsData[s]; db.ref('settings/sectors').set(sectorsData); } }
+        function adminAddJob(s) {
+            const j = document.getElementById(`new-job-${s}`).value.trim(); if(!j || sectorsData[s].includes(j)) return;
+            sectorsData[s].push(j); db.ref('settings/sectors').set(sectorsData);
+        }
+        function adminDeleteJob(s, j) { if(confirm("حذف؟")) { sectorsData[s] = sectorsData[s].filter(x => x !== j); db.ref('settings/sectors').set(sectorsData); } }
+
+        document.addEventListener('change', function(e) {
+            if(e.target.name === 'worker-availability') document.getElementById('allow-contact-container').classList.toggle('hidden', e.target.value !== 'مشغول');
+            if(e.target.name === 'request-status') document.getElementById('request-allow-contact-container').classList.toggle('hidden', e.target.value !== 'مستكفي');
+        });
+
+        function toggleCustomInput(selectId, customInputId) {
+            const sel = document.getElementById(selectId), cust = document.getElementById(customInputId);
+            if(sel && cust) { cust.classList.toggle('hidden', sel.value !== 'شيء آخر' && sel.value !== 'مدينة أخرى'); cust.required = !cust.classList.contains('hidden'); }
+        }
+
+        function getWaLink(phone) {
+            if(!phone) return '#'; let p = phone.trim().replace(/\+/g, '').replace(/^00/, '');
+            if(p.startsWith('7') && p.length === 9) p = '967' + p;
+            return `https://wa.me/${p}?text=${encodeURIComponent(dynamicWaMsg)}`;
+        }
+
+        db.ref('workers').on('value', (snapshot) => {
+            const data = snapshot.val(); allWorkers = [];
+            if (data) Object.keys(data).forEach(k => allWorkers.push({ id: k, ...data[k] }));
+            allWorkers.reverse(); document.getElementById('workers-loading-state').classList.add('hidden'); renderWorkers(allWorkers);
+        });
+
+        db.ref('worker_messages').on('value', snap => {
+            workerMsgCounts = {};
+            if(snap.exists()) snap.forEach(child => { const wId = child.val().workerId; workerMsgCounts[wId] = (workerMsgCounts[wId] || 0) + 1; });
+            renderWorkers(allWorkers); 
+        });
+
+        function renderWorkers(dataList) {
+            const grid = document.getElementById('workers-grid'); grid.innerHTML = '';
+            if (dataList.length === 0) { document.getElementById('workers-empty-state').classList.remove('hidden'); } 
+            else {
+                document.getElementById('workers-empty-state').classList.add('hidden');
+                dataList.forEach(worker => {
+                    const statusClass = worker.availability === 'متاح' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200';
+                    const canCall = (worker.availability === 'متاح') || (worker.availability === 'مشغول' && worker.allowContact === 'yes');
+                    
+                    let actionButtons = '';
+                    if (canCall) {
+                        actionButtons += `<div class="flex gap-2 mb-2"><a href="tel:${worker.phone}" class="flex-1 bg-bakery-500 hover:bg-bakery-600 text-white text-center font-bold py-2 rounded-lg text-xs">📞 اتصال</a><a href="${getWaLink(worker.phone)}" target="_blank" class="flex-1 bg-green-500 hover:bg-green-600 text-white text-center font-bold py-2 rounded-lg text-xs">💬 واتساب</a></div>`;
+                    } else {
+                        actionButtons += `<button disabled class="w-full mb-2 bg-gray-100 text-gray-500 font-bold py-2 rounded-lg text-xs border border-gray-200 cursor-not-allowed">🔕 غير متاح</button>`;
+                    }
+                    actionButtons += `<button onclick="openMessageModal('${worker.id}')" class="w-full bg-blue-50 text-blue-700 font-bold py-2 rounded-lg text-xs border border-blue-200">✉️ أرسل رسالة</button>`;
+
+                    let controlBtns = '';
+                    if (currentUser && (currentUser.uid === worker.uid || currentUserPhone === ADMIN_PHONE)) {
+                        const msgCount = workerMsgCounts[worker.id] || 0;
+                        const msgDotHtml = msgCount > 0 ? `<span class="absolute -top-1 -right-1 flex h-3.5 w-3.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-600 border border-white"></span></span>` : '';
+                        actionButtons += `<div class="relative w-full mt-2"><button onclick="openViewMessages('${worker.id}')" class="w-full bg-purple-100 text-purple-800 font-bold py-2 rounded-lg text-xs border border-purple-300">📥 الوارد (${msgCount})</button>${msgDotHtml}</div>`;
+                        controlBtns = `<div class="flex gap-2 mt-3 pt-3 border-t border-gray-100"><button onclick="editWorker('${worker.id}')" class="flex-1 bg-amber-100 text-amber-700 py-1.5 rounded text-xs font-bold">تعديل</button><button onclick="deleteWorker('${worker.id}')" class="flex-1 bg-red-100 text-red-700 py-1.5 rounded text-xs font-bold">حذف</button></div>`;
+                    }
+
+                    grid.innerHTML += `
+                        <div class="bg-white rounded-xl border border-gray-100 p-5 flex flex-col justify-between hover:shadow-md transition">
+                            <div>
+                                <div class="flex justify-between items-start mb-2"><h4 class="font-bold text-gray-900">${worker.name}</h4><span class="text-[10px] px-2 py-0.5 rounded-full border ${statusClass}">${worker.availability}</span></div>
+                                <div class="flex flex-wrap gap-1.5"><span class="bg-indigo-50 text-indigo-700 border border-indigo-100 text-[11px] font-bold px-2 py-0.5 rounded-md">${worker.sector || 'عام'}</span><span class="bg-amber-50 text-amber-800 text-[11px] font-bold px-2 py-0.5 rounded-md">${worker.job}</span><span class="bg-gray-50 text-gray-600 text-[11px] font-bold px-2 py-0.5 rounded-md">${worker.governorate}</span></div>
+                            </div>
+                            <div class="mt-5">${actionButtons}${controlBtns}</div>
+                        </div>`;
+                });
+            }
+        }
+
+        function filterWorkers() {
+            const n = document.getElementById('search-name').value.toLowerCase().trim();
+            const s = document.getElementById('filter-sector').value, j = document.getElementById('filter-job').value, g = document.getElementById('filter-governorate').value;
+            const filtered = allWorkers.filter(w => {
+                return (w.name.toLowerCase().includes(n) || (w.job||'').toLowerCase().includes(n) || (w.sector||'').toLowerCase().includes(n)) &&
+                       (s === "" || w.sector === s || (!w.sector && s === "أخرى")) && (j === "" || w.job === j) && (g === "" || w.governorate === g);
+            });
+            renderWorkers(filtered);
+        }
+
+        function handleWorkerSubmit(event) {
+            event.preventDefault(); if (!currentUser) { alert("سجل الدخول أولاً."); openAuthModal(); return; }
+            let job = document.getElementById('worker-job').value; if (job === 'شيء آخر') job = document.getElementById('worker-job-custom').value.trim();
+            let gov = document.getElementById('worker-governorate').value; if (gov === 'مدينة أخرى') gov = document.getElementById('worker-governorate-custom').value.trim();
+            const avail = document.querySelector('input[name="worker-availability"]:checked').value;
+            
+            const workerData = {
+                name: document.getElementById('worker-name').value.trim(), sector: document.getElementById('worker-sector').value, job: job, 
+                phone: document.getElementById('worker-phone').value.trim(), phone2: document.getElementById('worker-phone2').value.trim(), 
+                governorate: gov, availability: avail, allowContact: avail === 'مشغول' ? document.querySelector('input[name="worker-allow-contact"]:checked').value : "yes",
+                uid: currentUser.uid, timestamp: Date.now()
+            };
+
+            if (editingWorkerId) { db.ref('workers/' + editingWorkerId).update(workerData); alert("تم التحديث!"); } 
+            else { db.ref('workers').push(workerData); alert("تم التسجيل!"); }
+            cancelEdit('worker'); showSection('home');
+        }
+
+        function deleteWorker(id) { if(confirm("حذف؟")) db.ref('workers/' + id).remove(); }
+
+        function editWorker(id) {
+            const w = allWorkers.find(x => x.id === id); if(!w) return;
+            editingWorkerId = id;
+            document.getElementById('worker-name').value = w.name; document.getElementById('worker-phone').value = w.phone; document.getElementById('worker-phone2').value = w.phone2 || '';
+            document.querySelector(`input[name="worker-availability"][value="${w.availability}"]`).checked = true;
+            if(w.availability === 'مشغول') { document.getElementById('allow-contact-container').classList.remove('hidden'); document.querySelector(`input[name="worker-allow-contact"][value="${w.allowContact || 'yes'}"]`).checked = true; }
+            
+            const sSel = document.getElementById('worker-sector'); sSel.value = w.sector || 'أخرى'; updateJobsList('worker-sector', 'worker-job', 'worker-job-custom');
+            const jSel = document.getElementById('worker-job'); if(Array.from(jSel.options).some(o=>o.value===w.job)) jSel.value = w.job; else { jSel.value='شيء آخر'; document.getElementById('worker-job-custom').value=w.job; document.getElementById('worker-job-custom').classList.remove('hidden'); }
+            const gSel = document.getElementById('worker-governorate'); if(Array.from(gSel.options).some(o=>o.value===w.governorate)) gSel.value = w.governorate; else { gSel.value='مدينة أخرى'; document.getElementById('worker-governorate-custom').value=w.governorate; document.getElementById('worker-governorate-custom').classList.remove('hidden'); }
+            
+            document.getElementById('worker-edit-mode-msg').classList.remove('hidden'); document.getElementById('worker-submit-btn').innerText = "💾 حفظ التحديثات"; document.getElementById('worker-cancel-edit-btn').classList.remove('hidden');
+            showSection('register');
+        }
+
+        db.ref('requests').on('value', (snapshot) => {
+            const data = snapshot.val(); allRequests = [];
+            if (data) Object.keys(data).forEach(k => allRequests.push({ id: k, ...data[k] }));
+            allRequests.reverse(); document.getElementById('requests-loading-state').classList.add('hidden'); filterRequests(); 
+        });
+
+        function filterRequests() {
+            const n = document.getElementById('search-request-name').value.toLowerCase().trim();
+            const s = document.getElementById('filter-request-sector-dropdown').value, g = document.getElementById('filter-request-governorate').value;
+            const filtered = allRequests.filter(r => (r.bakeryName.toLowerCase().includes(n) || (r.job||'').toLowerCase().includes(n)) && (s === "" || r.sector === s || (!r.sector && s === "أخرى")) && (g === "" || r.governorate === g));
+            renderRequests(filtered);
+        }
+
+        function renderRequests(dataList) {
+            const container = document.getElementById('requests-container'); container.innerHTML = '';
+            if (dataList.length === 0) { document.getElementById('requests-empty-state').classList.remove('hidden'); return; }
+            document.getElementById('requests-empty-state').classList.add('hidden');
+            dataList.sort((a, b) => { const sA = a.status||'يبحث', sB = b.status||'يبحث'; if(sA==='يبحث عن عمال' && sB==='مستكفي') return -1; if(sA==='مستكفي' && sB==='يبحث عن عمال') return 1; return 0; });
+            
+            container.innerHTML = `<div id="requests-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 mt-4"></div>`;
+            const currentGrid = document.getElementById('requests-grid');
+            
+            dataList.forEach(r => {
+                const sL = r.status || 'يبحث عن عمال', sC = sL === 'يبحث عن عمال' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-600 border-gray-200';
+                let btns = ''; if (currentUser && (currentUser.uid === r.uid || currentUserPhone === ADMIN_PHONE)) btns = `<div class="flex gap-2 mt-3 pt-3 border-t border-gray-100"><button onclick="editRequest('${r.id}')" class="flex-1 bg-amber-100 text-amber-700 py-1.5 rounded text-xs font-bold">تعديل</button><button onclick="deleteRequest('${r.id}')" class="flex-1 bg-red-100 text-red-700 py-1.5 rounded text-xs font-bold">حذف</button></div>`;
+                let cont = ''; if (sL === 'يبحث عن عمال' || r.allowContact === 'yes') { if (r.phone) cont = `<div class="flex gap-2"><a href="tel:${r.phone}" class="flex-1 bg-blue-600 text-white text-center font-bold py-2 rounded-lg text-xs">📞 اتصال</a><a href="${getWaLink(r.phone)}" class="flex-1 bg-green-500 text-white text-center font-bold py-2 rounded-lg text-xs">💬 واتساب</a></div>`; else cont = `<span class="block w-full bg-gray-100 text-gray-500 text-center font-bold py-2 rounded-lg text-xs border">📴 لايوجد رقم</span>`; } else cont = `<span class="block w-full bg-gray-100 text-gray-500 text-center font-bold py-2 rounded-lg text-xs border">🛑 مستكفي</span>`;
+                
+                currentGrid.innerHTML += `
+                    <div class="bg-white rounded-xl border border-blue-100 p-5 flex flex-col justify-between hover:shadow-md transition border-r-4 ${sL === 'يبحث عن عمال' ? 'border-r-blue-500' : 'border-r-gray-300'} relative">
+                        <div>
+                            <div class="flex justify-between items-start"><h4 class="font-bold text-gray-900">${r.bakeryName}</h4><span class="text-[10px] px-2 py-0.5 rounded-full border ${sC}">${sL}</span></div>
+                            <div class="flex flex-wrap gap-1.5 mt-2"><span class="bg-indigo-50 text-indigo-700 text-[11px] font-bold px-2 py-0.5 rounded-md">${r.sector||'عام'}</span><span class="bg-red-50 text-red-700 text-[11px] font-bold px-2 py-0.5 rounded-md">مطلوب: ${r.job}</span><span class="bg-gray-50 text-gray-600 text-[11px] font-bold px-2 py-0.5 rounded-md">${r.governorate||'غير محدد'}</span></div>
+                        </div>
+                        <div class="mt-5">${cont}<button onclick="openNotesModal('${r.id}', '${r.uid}')" class="w-full bg-orange-50 text-orange-700 font-bold py-2 rounded-lg text-xs border border-orange-200 mt-2">📝 ملاحظات</button>${btns}</div>
+                    </div>`;
+            });
+        }
+
+        function handleBakeryRequestSubmit(event) {
+            event.preventDefault(); if (!currentUser) { alert("سجل الدخول أولاً."); openAuthModal(); return; }
+            let job = document.getElementById('request-job').value; if (job === 'شيء آخر') job = document.getElementById('request-job-custom').value.trim();
+            let gov = document.getElementById('request-governorate').value; if (gov === 'مدينة أخرى') gov = document.getElementById('request-governorate-custom').value.trim();
+            const stat = document.querySelector('input[name="request-status"]:checked').value;
+            
+            const reqData = {
+                bakeryName: document.getElementById('bakery-name').value.trim(), sector: document.getElementById('request-sector').value, job: job,
+                phone: document.getElementById('bakery-phone').value.trim(), mapLink: document.getElementById('bakery-map-link').value.trim(),
+                governorate: gov, status: stat, allowContact: stat === 'مستكفي' ? document.querySelector('input[name="request-allow-contact"]:checked').value : "yes",
+                uid: currentUser.uid, timestamp: Date.now()
+            };
+
+            if (editingRequestId) { db.ref('requests/' + editingRequestId).update(reqData); alert("تم التحديث!"); } 
+            else { db.ref('requests').push(reqData); alert("تم النشر!"); }
+            cancelEdit('request'); showSection('requests');
+        }
+
+        function deleteRequest(id) { if(confirm("حذف؟")) { db.ref('requests/' + id).remove(); db.ref('request_notes/' + id).remove(); } }
+        function editRequest(id) {
+            const r = allRequests.find(x => x.id === id); if(!r) return;
+            editingRequestId = id;
+            document.getElementById('bakery-name').value = r.bakeryName; document.getElementById('bakery-phone').value = r.phone || ''; document.getElementById('bakery-map-link').value = r.mapLink || '';
+            document.querySelector(`input[name="request-status"][value="${r.status||'يبحث عن عمال'}"]`).checked = true;
+            if((r.status||'يبحث') === 'مستكفي') { document.getElementById('request-allow-contact-container').classList.remove('hidden'); document.querySelector(`input[name="request-allow-contact"][value="${r.allowContact||'no'}"]`).checked = true; }
+            
+            const sSel = document.getElementById('request-sector'); sSel.value = r.sector || 'أخرى'; updateJobsList('request-sector', 'request-job', 'request-job-custom');
+            const jSel = document.getElementById('request-job'); if(Array.from(jSel.options).some(o=>o.value===r.job)) jSel.value = r.job; else { jSel.value='شيء آخر'; document.getElementById('request-job-custom').value=r.job; document.getElementById('request-job-custom').classList.remove('hidden'); }
+            const gSel = document.getElementById('request-governorate'); if(Array.from(gSel.options).some(o=>o.value===r.governorate)) gSel.value = r.governorate; else { gSel.value='مدينة أخرى'; document.getElementById('request-governorate-custom').value=r.governorate; document.getElementById('request-governorate-custom').classList.remove('hidden'); }
+            
+            document.getElementById('request-edit-mode-msg').classList.remove('hidden'); document.getElementById('request-submit-btn').innerText = "💾 حفظ التحديثات"; document.getElementById('request-cancel-edit-btn').classList.remove('hidden');
+            showSection('add-request');
+        }
+
+        function openNotesModal(reqId, ownerUid) {
+            if(!currentUser) { alert("سجل الدخول للملاحظات."); openAuthModal(); return; }
+            document.getElementById('note-request-id').value = reqId; document.getElementById('note-content').value = '';
+            if (currentUser.uid === ownerUid || currentUserPhone === ADMIN_PHONE) {
+                document.getElementById('notes-list-container').classList.remove('hidden');
+                db.ref('request_notes/' + reqId).on('value', snap => {
+                    const el = document.getElementById('notes-list'); el.innerHTML = '';
+                    if(!snap.exists()) { el.innerHTML = '<p class="text-xs text-center py-4">لا توجد ملاحظات.</p>'; return; }
+                    let notes = []; snap.forEach(c => notes.push(c.val())); notes.reverse().forEach(n => {
+                        el.innerHTML += `<div class="bg-white p-2 mb-2 rounded border"><div class="font-bold text-xs text-orange-800">👤 ${n.senderName}</div><div class="text-xs text-gray-700">${n.content}</div></div>`;
                     });
                 });
-            }
-            renderAdminUsersList();
+            } else document.getElementById('notes-list-container').classList.add('hidden');
+            document.getElementById('request-notes-modal').classList.remove('hidden');
+        }
+        function submitNote() {
+            const reqId = document.getElementById('note-request-id').value, cont = document.getElementById('note-content').value.trim();
+            if(!cont) return;
+            db.ref('request_notes/' + reqId).push({ senderUid: currentUser.uid, senderName: currentUser.displayName || currentUserPhone, content: cont, timestamp: Date.now() })
+            .then(() => { alert("تم إضافة ملاحظتك بنجاح!"); document.getElementById('note-content').value = ''; if(document.getElementById('notes-list-container').classList.contains('hidden')) closeModals(); });
+        }
+
+        function cancelEdit(type) {
+            if(type === 'worker') { editingWorkerId = null; document.getElementById('worker-registration-form').reset(); document.getElementById('worker-cancel-edit-btn').classList.add('hidden'); document.getElementById('worker-submit-btn').innerText = "تسجيل بياناتي في الدليل ✨"; } 
+            else { editingRequestId = null; document.getElementById('bakery-request-form').reset(); document.getElementById('request-cancel-edit-btn').classList.add('hidden'); document.getElementById('request-submit-btn').innerText = "نشر الطلب الآن 🚀"; }
+        }
+
+        db.ref('ads').on('value', (snap) => {
+            allAds = []; if (snap.exists()) Object.keys(snap.val()).forEach(k => allAds.push({ id: k, ...snap.val()[k] }));
+            renderAdsViewer(); if (currentUser && currentUserPhone === ADMIN_PHONE) renderAdminAdsList();
         });
 
-        db.ref('workers').on('value', snap => {
-            if(snap.exists()) {
-                snap.forEach(child => {
-                    const data = child.val();
-                    if(data.uid && !aggregatedUsers.has(data.uid)) {
-                        aggregatedUsers.set(data.uid, {
-                            uid: data.uid, name: data.name, phone: data.phone, lastActivity: data.timestamp, source: 'عامل (لم يسجل حساب)'
-                        });
-                    }
-                });
-            }
-            renderAdminUsersList();
-        });
+        function toggleAdInputType() {
+            const type = document.getElementById('ad-type').value;
+            ['ad-image-container', 'ad-text-container', 'ad-app-container'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            if (type.includes('image')) document.getElementById('ad-image-container').classList.remove('hidden');
+            if (type.includes('text')) document.getElementById('ad-text-container').classList.remove('hidden');
+            if (type === 'app') document.getElementById('ad-app-container').classList.remove('hidden');
+        }
+        function handleAddAd(e) {
+            e.preventDefault(); if (!currentUser || currentUserPhone !== ADMIN_PHONE) return;
+            const t = document.getElementById('ad-type').value, adData = { type: t, linkUrl: document.getElementById('ad-link-url').value.trim(), order: parseInt(document.getElementById('ad-order').value)||1, duration: parseInt(document.getElementById('ad-duration').value)||5, timestamp: Date.now() };
+            if (t.includes('image')) adData.imageUrl = document.getElementById('ad-image-url').value.trim();
+            if (t.includes('text')) adData.textContent = document.getElementById('ad-text-content').value.trim();
+            if (t === 'app') adData.appName = document.getElementById('ad-app-name').value.trim();
 
-        db.ref('requests').on('value', snap => {
-            if(snap.exists()) {
-                snap.forEach(child => {
-                    const data = child.val();
-                    if(data.uid && !aggregatedUsers.has(data.uid)) {
-                        aggregatedUsers.set(data.uid, {
-                            uid: data.uid, name: data.bakeryName, phone: data.phone, lastActivity: data.timestamp, source: 'صاحب عمل (لم يسجل حساب)'
-                        });
-                    }
+            if (editingAdId) { db.ref('ads/' + editingAdId).update(adData); alert("تم التعديل!"); } else { db.ref('ads').push(adData); alert("تمت الإضافة!"); }
+            cancelAdEdit();
+        }
+        function editAd(id) {
+            const ad = allAds.find(a => a.id === id); if (!ad) return; editingAdId = id;
+            document.getElementById('ad-type').value = ad.type; toggleAdInputType();
+            if(ad.imageUrl) document.getElementById('ad-image-url').value = ad.imageUrl; if(ad.textContent) document.getElementById('ad-text-content').value = ad.textContent; if(ad.appName) document.getElementById('ad-app-name').value = ad.appName;
+            document.getElementById('ad-link-url').value = ad.linkUrl || ''; document.getElementById('ad-order').value = ad.order || 1; document.getElementById('ad-duration').value = ad.duration || 5;
+            document.getElementById('ad-edit-mode-msg').classList.remove('hidden'); document.getElementById('ad-submit-btn').innerText = "💾 حفظ التعديلات"; document.getElementById('ad-cancel-edit-btn').classList.remove('hidden');
+        }
+        function cancelAdEdit() { editingAdId = null; document.getElementById('admin-ad-form').reset(); toggleAdInputType(); document.getElementById('ad-edit-mode-msg').classList.add('hidden'); document.getElementById('ad-submit-btn').innerText = "➕ إضافة الإعلان"; document.getElementById('ad-cancel-edit-btn').classList.add('hidden'); }
+        function deleteAd(id) { if(confirm("حذف الإعلان؟")) db.ref('ads/' + id).remove(); }
+        function renderAdminAdsList() {
+            const list = document.getElementById('admin-ads-list'); list.innerHTML = '';
+            if (allAds.length === 0) { list.innerHTML = '<p class="text-sm">لا إعلانات.</p>'; return; }
+            [...allAds].sort((a, b) => (a.order||1) - (b.order||1)).forEach(ad => {
+                list.innerHTML += `<div class="flex justify-between items-center p-3 border rounded-lg mb-2"><div class="text-xs">نوع: ${ad.type} | ترتيب: ${ad.order||1}</div><div class="flex gap-2"><button onclick="editAd('${ad.id}')" class="bg-amber-100 px-2 py-1 rounded text-xs">تعديل</button><button onclick="deleteAd('${ad.id}')" class="bg-red-100 px-2 py-1 rounded text-xs">حذف</button></div></div>`;
+            });
+        }
+        function renderAdsViewer() {
+            const cont = document.getElementById('ads-container'); clearTimeout(adSlideTimeout); clearInterval(adSlideInterval);
+            if (allAds.length === 0) { document.getElementById('section-ads-slider').classList.add('hidden'); return; }
+            document.getElementById('section-ads-slider').classList.remove('hidden'); cont.innerHTML = '';
+            allAds.sort((a, b) => (a.order||1) - (b.order||1)).forEach((ad, i) => {
+                const act = i===0 ? 'opacity-100 z-10' : 'opacity-0 z-0'; let inn = '';
+                if(ad.type==='image') inn = `<img src="${ad.imageUrl}" class="w-full h-full object-cover">`; else if(ad.type==='text') inn = `<div class="w-full h-full flex items-center justify-center bg-amber-100"><h3 class="font-bold">${ad.textContent}</h3></div>`; else if(ad.type==='app') inn = `<div class="w-full h-full flex items-center justify-between bg-green-500 text-white p-4"><h3>تطبيق ${ad.appName}</h3></div>`; else inn = `<div class="w-full h-full flex"><img src="${ad.imageUrl}" class="w-1/3 object-cover"><div class="w-2/3 flex items-center justify-center bg-indigo-50"><h3 class="font-bold">${ad.textContent}</h3></div></div>`;
+                cont.innerHTML += `<div class="slide absolute inset-0 w-full h-full ${act}" id="ad-slide-${i}">${ad.linkUrl ? `<a href="${ad.linkUrl}" target="_blank" class="block w-full h-full">${inn}</a>` : inn}</div>`;
+            });
+            currentAdIndex = 0; if (allAds.length > 1) scheduleNextAd();
+        }
+        function scheduleNextAd() { adSlideTimeout = setTimeout(showNextAd, (allAds[currentAdIndex].duration||5)*1000); }
+        function showNextAd() {
+            const prev = document.getElementById(`ad-slide-${currentAdIndex}`);
+            currentAdIndex = (currentAdIndex + 1) % allAds.length;
+            const next = document.getElementById(`ad-slide-${currentAdIndex}`);
+            if(prev && next) { prev.classList.replace('opacity-100', 'opacity-0'); prev.classList.replace('z-10', 'z-0'); next.classList.replace('opacity-0', 'opacity-100'); next.classList.replace('z-0', 'z-10'); }
+            scheduleNextAd();
+        }
+
+        function closeModals() { ['send-message-modal','view-messages-modal','request-notes-modal'].forEach(id => document.getElementById(id).classList.add('hidden')); db.ref('request_notes').off(); }
+        function openMessageModal(wId) { document.getElementById('msg-worker-id').value = wId; document.getElementById('send-message-modal').classList.remove('hidden'); }
+        function submitPrivateMessage() {
+            const wId = document.getElementById('msg-worker-id').value, sN = document.getElementById('msg-sender-name').value.trim(), c = document.getElementById('msg-content').value.trim();
+            if(!sN || !c) return;
+            db.ref('worker_messages').push({ workerId: wId, senderName: sN, content: c, timestamp: Date.now() }).then(() => { alert("تم الإرسال!"); closeModals(); });
+        }
+        function openViewMessages(wId) {
+            document.getElementById('view-messages-modal').classList.remove('hidden');
+            db.ref('worker_messages').orderByChild('workerId').equalTo(wId).once('value', snap => {
+                const list = document.getElementById('messages-list'); list.innerHTML = '';
+                if(!snap.exists()) { list.innerHTML = '<div class="text-center py-6">لا توجد رسائل.</div>'; return; }
+                let msgs = []; snap.forEach(c => msgs.push({id: c.key, ...c.val()})); msgs.reverse().forEach(m => {
+                    list.innerHTML += `<div class="bg-purple-50 p-3 mb-2 rounded relative"><button onclick="deleteMessage('${m.id}', '${wId}')" class="absolute top-2 left-2 text-red-500 text-xs">🗑️</button><div class="font-bold text-sm">👤 ${m.senderName}</div><div class="text-xs bg-white p-2 rounded mt-1">${m.content}</div></div>`;
                 });
-            }
-            renderAdminUsersList();
-        });
+            });
+        }
+        function deleteMessage(mId, wId) { if(confirm("حذف؟")) db.ref('worker_messages/' + mId).remove().then(() => openViewMessages(wId)); }
+
+        let aggregatedUsers = new Map();
+        function renderAdminUsersList() {
+            const list = document.getElementById('admin-users-list'), count = document.getElementById('admin-users-count');
+            if(!list || !count) return;
+            count.innerText = aggregatedUsers.size; list.innerHTML = '';
+            Array.from(aggregatedUsers.values()).sort((a,b) => (b.lastActivity||0) - (a.lastActivity||0)).forEach(u => {
+                list.innerHTML += `<div class="flex items-center gap-3 p-3 border rounded-lg mb-2"><div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">${u.name?u.name.charAt(0):'👤'}</div><div class="flex-1"><div class="font-bold text-sm">${u.name||'مجهول'}</div><div class="text-[11px] text-gray-500">${u.phone||'بدون'} - ${u.source}</div></div></div>`;
+            });
+        }
+        db.ref('users').on('value', snap => { if(snap.exists()) snap.forEach(c => { const d=c.val(); aggregatedUsers.set(c.key, {uid:c.key, name:d.name, phone:d.phone, lastActivity:d.lastLogin, source:'حساب مسجل'}); }); renderAdminUsersList(); });
+        db.ref('workers').on('value', snap => { if(snap.exists()) snap.forEach(c => { const d=c.val(); if(d.uid && !aggregatedUsers.has(d.uid)) aggregatedUsers.set(d.uid, {uid:d.uid, name:d.name, phone:d.phone, lastActivity:d.timestamp, source:'عامل'}); }); renderAdminUsersList(); });
+        db.ref('requests').on('value', snap => { if(snap.exists()) snap.forEach(c => { const d=c.val(); if(d.uid && !aggregatedUsers.has(d.uid)) aggregatedUsers.set(d.uid, {uid:d.uid, name:d.bakeryName, phone:d.phone, lastActivity:d.timestamp, source:'صاحب عمل'}); }); renderAdminUsersList(); });
 
     </script>
 </body>
