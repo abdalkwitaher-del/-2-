@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -30,6 +29,11 @@
         /* تأثير الدخول للرسائل */
         .chat-msg-enter { animation: slideIn 0.2s ease-out forwards; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* مفتاح التبديل (Toggle) في لوحة المدير */
+        .toggle-checkbox:checked { right: 0; left: auto; border-color: #9333ea; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #9333ea; }
+        .toggle-checkbox { right: auto; left: 0; transition: all 0.3s; border-color: #d1d5db; }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -55,7 +59,7 @@
             <nav class="flex space-x-2 space-x-reverse overflow-x-auto hide-scrollbar py-2 mt-2 md:mt-0 items-center border-t border-gray-100 md:border-none">
                 <button id="nav-home" onclick="showSection('home')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold bg-bakery-100 text-bakery-700 transition">العمال المتاحين</button>
                 <button id="nav-requests" onclick="showSection('requests')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition">فرص العمل</button>
-                <button id="nav-market" onclick="showSection('market')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition border border-market-500 text-market-700">السوق للبيع 🛒</button>
+                <button id="nav-market" onclick="showSection('market')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition border border-market-500 text-market-700">للبيع فقط 🛒</button>
                 <button id="nav-register" onclick="showSection('register')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition">تسجيل كعامل</button>
                 <button id="nav-add-request" onclick="showSection('add-request')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition">نشر فرصة عمل</button>
                 <button id="nav-chat" onclick="showSection('simple-chat')" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 transition">الدردشة العامة 💬</button>
@@ -160,7 +164,7 @@
             <div class="bg-gradient-to-r from-market-600 to-market-700 rounded-2xl p-6 md:p-10 text-white shadow-md relative overflow-hidden flex flex-col md:flex-row justify-between items-center">
                 <div class="relative z-10 max-w-xl space-y-2 mb-4 md:mb-0">
                     <span class="bg-market-900/30 text-market-100 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">بيع وشراء</span>
-                    <h2 class="text-2xl md:text-4xl font-black leading-tight">السوق المفتوح لعرض منتجاتك وأجهزتك</h2>
+                    <h2 class="text-2xl md:text-4xl font-black leading-tight">المنصة المفتوحة لعرض منتجاتك وأجهزتك</h2>
                     <p class="text-market-100 text-sm mt-2">إلكترونيات، جوالات، مستلزمات محلات والمزيد...</p>
                 </div>
                 <button onclick="showSection('add-market')" class="relative z-10 bg-white text-market-700 hover:bg-gray-50 px-6 py-3 rounded-xl font-black shadow-lg transition transform hover:scale-105 border border-transparent">
@@ -224,7 +228,7 @@
                         <label class="block text-xs font-bold text-gray-600 mb-1">رقم هاتف التواصل</label>
                         <input type="tel" id="market-phone" required class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-left focus:outline-none focus:border-market-500" dir="ltr" placeholder="777XXXXXX">
                     </div>
-                    <button type="submit" id="market-submit-btn" class="w-full bg-market-600 hover:bg-market-700 text-white font-bold py-3 px-4 rounded-xl text-sm transition mt-4 shadow-md">نشر الإعلان في السوق 🚀</button>
+                    <button type="submit" id="market-submit-btn" class="w-full bg-market-600 hover:bg-market-700 text-white font-bold py-3 px-4 rounded-xl text-sm transition mt-4 shadow-md">نشر الإعلان للبيع 🚀</button>
                 </form>
             </div>
         </section>
@@ -236,18 +240,19 @@
                         <span class="text-2xl">💬</span>
                         <div>
                             <h3 class="text-base md:text-lg font-bold leading-tight">الدردشة العامة المباشرة</h3>
-                            <p class="text-[10px] md:text-xs text-green-100 mt-0.5">اكتب رسالتك ليتفاعل معك الآخرون</p>
+                            <p class="text-[10px] md:text-xs text-green-100 mt-0.5">تبادل الخبرات وتواصل مع الآخرين</p>
                         </div>
                     </div>
                 </div>
                 
-                <div id="simple-chat-container" class="flex-1 overflow-y-auto bg-[#e5ddd5] p-4 space-y-3 flex flex-col">
+                <div id="simple-chat-container" class="flex-1 overflow-y-auto bg-[#e5ddd5] p-4 space-y-3 flex flex-col relative">
                     <div class="text-center text-sm text-gray-500 py-4">جاري تحميل الرسائل...</div>
                 </div>
 
                 <div class="p-3 bg-[#f0f2f5] border-t border-gray-200 shrink-0">
-                    <form onsubmit="sendSimpleChat(event)" class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="simple-chat-name" required placeholder="الاسم..." class="w-full sm:w-1/4 px-4 py-2 text-sm rounded-xl focus:outline-none border border-gray-300">
+                    <div id="chat-status-msg" class="hidden text-center text-red-600 font-bold p-2 text-sm bg-red-100 rounded-xl w-full border border-red-200 mb-2">الدردشة مغلقة حالياً من قبل الإدارة</div>
+                    <form id="chat-input-form" onsubmit="sendSimpleChat(event)" class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="simple-chat-name" required placeholder="الاسم (سجل دخول)" class="w-full sm:w-1/4 px-4 py-2 text-sm rounded-xl focus:outline-none border border-gray-300 bg-gray-100 text-gray-600 cursor-not-allowed" readonly title="لا يمكن تعديل الاسم إلا من قبل الإدارة">
                         <div class="flex-1 flex gap-2 w-full">
                             <input type="text" id="simple-chat-text" required placeholder="اكتب رسالتك هنا..." class="flex-1 px-4 py-2 text-sm rounded-xl focus:outline-none border border-gray-300">
                             <button type="submit" class="bg-[#00a884] hover:bg-[#008f6f] text-white rounded-xl px-4 flex items-center justify-center font-bold shadow-sm transition">
@@ -421,7 +426,22 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm mt-6 border-r-4 border-r-green-500">
+            <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm border-r-4 border-r-green-500">
+                <h4 class="text-lg font-bold mb-4 border-b pb-2">💬 إدارة الدردشة العامة</h4>
+                <div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <div>
+                        <h5 class="font-bold text-sm text-gray-800">حالة الدردشة</h5>
+                        <p class="text-xs text-gray-500">تفعيل أو إيقاف إرسال الرسائل للأعضاء</p>
+                    </div>
+                    <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in ml-2">
+                        <input type="checkbox" id="admin-chat-toggle" onchange="toggleChatStatus(this.checked)" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer left-0 top-0"/>
+                        <label for="admin-chat-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"></label>
+                    </div>
+                </div>
+                <button onclick="adminClearChat()" class="w-full bg-red-100 hover:bg-red-200 text-red-700 font-bold py-2.5 px-4 rounded-lg text-sm transition border border-red-200 shadow-sm">🗑️ مسح جميع رسائل الدردشة</button>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm border-r-4 border-r-green-500">
                 <h4 class="text-lg font-bold mb-4 border-b pb-2">📦 إضافة بيانات المخابز الأولية</h4>
                 <p class="text-[11px] text-gray-500 mb-3">زر لإضافة مخابز صنعاء والحديدة دفعة واحدة لتنشيط قسم (فرص العمل). استخدمه مرة واحدة فقط لتجنب تكرار البيانات.</p>
                 <button onclick="injectBakeriesData()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded-lg text-sm transition">➕ إضافة جميع المخابز الآن</button>
@@ -648,7 +668,7 @@
     </div>
 
     <script>
-        // إعدادات فايربيز (كما هي)
+        // إعدادات فايربيز
         const firebaseConfig = {
             apiKey: "AIzaSyAvUiAdoW0OjrwuumyAQuAbcR9rdp2i-Sc",
             authDomain: "bakery-workers-44a77.firebaseapp.com",
@@ -671,7 +691,7 @@
         
         let allWorkers = [];
         let allRequests = [];
-        let allMarketItems = []; // بيانات السوق
+        let allMarketItems = []; 
         let allAds = []; 
         let workerMsgCounts = {}; 
         
@@ -682,6 +702,9 @@
         let currentAdIndex = 0;
         let adSlideInterval; 
         let adSlideTimeout; 
+
+        // إعدادات الدردشة العامة
+        let isChatEnabled = true;
 
         // ==========================================
         //         نظام المصادقة (كما هو)
@@ -765,16 +788,31 @@
             currentUser = user;
             if (user) {
                 currentUserPhone = user.email.split('@')[0];
-                // تعبئة الاسم التلقائي في الشات لو كان مسجلا
                 const chatNameInput = document.getElementById('simple-chat-name');
-                if(chatNameInput && !chatNameInput.value) chatNameInput.value = user.displayName || currentUserPhone;
+                if(chatNameInput) {
+                    chatNameInput.value = user.displayName || currentUserPhone;
+                    if(currentUserPhone === ADMIN_PHONE) {
+                        chatNameInput.removeAttribute('readonly');
+                        chatNameInput.classList.remove('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                    } else {
+                        chatNameInput.setAttribute('readonly', 'true');
+                        chatNameInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                    }
+                }
             } else {
                 currentUserPhone = null;
+                const chatNameInput = document.getElementById('simple-chat-name');
+                if(chatNameInput) {
+                    chatNameInput.value = '';
+                    chatNameInput.setAttribute('readonly', 'true');
+                    chatNameInput.classList.add('bg-gray-100', 'cursor-not-allowed', 'text-gray-600');
+                }
             }
             updateAuthUI();
             renderWorkers(allWorkers);
             filterRequests();
             renderMarketItems(allMarketItems);
+            checkChatAccess(); // تحديث حالة الدردشة بناء على المستخدم
             
             if(currentUser && currentUserPhone === ADMIN_PHONE) {
                 document.getElementById('nav-admin').classList.remove('hidden');
@@ -870,8 +908,43 @@
         }
 
         // ==========================================
-        //  الدردشة المبسطة (الجديدة) بدلاً من القديمة
+        //  إعدادات الدردشة العامة
         // ==========================================
+        
+        db.ref('settings/general/chatEnabled').on('value', snap => {
+            isChatEnabled = snap.exists() ? snap.val() : true;
+            const toggle = document.getElementById('admin-chat-toggle');
+            if(toggle) toggle.checked = isChatEnabled;
+            checkChatAccess();
+        });
+
+        function checkChatAccess() {
+            const chatForm = document.getElementById('chat-input-form');
+            const chatMsg = document.getElementById('chat-status-msg');
+            
+            if(chatForm && chatMsg) {
+                if(!isChatEnabled && (!currentUser || currentUserPhone !== ADMIN_PHONE)) {
+                    chatForm.classList.add('hidden');
+                    chatMsg.classList.remove('hidden');
+                } else {
+                    chatForm.classList.remove('hidden');
+                    chatMsg.classList.add('hidden');
+                }
+            }
+        }
+
+        function toggleChatStatus(enabled) {
+            if(!currentUser || currentUserPhone !== ADMIN_PHONE) return;
+            db.ref('settings/general').update({ chatEnabled: enabled });
+        }
+
+        function adminClearChat() {
+            if(!currentUser || currentUserPhone !== ADMIN_PHONE) return;
+            if(confirm("تحذير: سيتم حذف جميع رسائل الدردشة بشكل نهائي للجميع! هل أنت متأكد؟")) {
+                db.ref('simple_chat_messages').remove().then(() => alert("تم حذف الدردشة بنجاح."));
+            }
+        }
+
         db.ref('simple_chat_messages').orderByChild('timestamp').limitToLast(50).on('value', snap => {
             const container = document.getElementById('simple-chat-container');
             if(!container) return;
@@ -915,9 +988,13 @@
 
         function sendSimpleChat(e) {
             e.preventDefault();
+            if(!currentUser) { alert("يجب تسجيل الدخول للمشاركة في الدردشة."); openAuthModal(); return; }
+            if(!isChatEnabled && currentUserPhone !== ADMIN_PHONE) { alert("الدردشة مغلقة حالياً من قبل الإدارة."); return; }
+
             const nameInput = document.getElementById('simple-chat-name');
             const textInput = document.getElementById('simple-chat-text');
-            const name = nameInput.value.trim();
+            // تأكيد أخذ الاسم المسجل مالم يتدخل المدير ويغيره
+            const name = currentUserPhone === ADMIN_PHONE ? nameInput.value.trim() : (currentUser.displayName || currentUserPhone);
             const text = textInput.value.trim();
             
             if(!name || !text) return;
@@ -943,7 +1020,7 @@
 
 
         // ==========================================
-        //         قسم السوق والمبيعات (الجديد)
+        //         قسم السوق والمبيعات 
         // ==========================================
         let currentMarketFilter = 'الكل';
 
@@ -1029,7 +1106,7 @@
 
         function handleMarketSubmit(e) {
             e.preventDefault();
-            if(!currentUser) { alert("يجب تسجيل الدخول لنشر إعلان في السوق."); openAuthModal(); return; }
+            if(!currentUser) { alert("يجب تسجيل الدخول لنشر إعلان."); openAuthModal(); return; }
 
             const title = document.getElementById('market-title').value.trim();
             const category = document.getElementById('market-category').value;
@@ -1043,7 +1120,7 @@
                 uid: currentUser.uid,
                 timestamp: Date.now()
             }).then(() => {
-                alert("🎉 تم نشر منتجك في السوق بنجاح!");
+                alert("🎉 تم نشر منتجك للبيع بنجاح!");
                 document.getElementById('market-form').reset();
                 showSection('market');
                 filterMarketItems('الكل');
@@ -1051,14 +1128,14 @@
         }
 
         function deleteMarketItem(id) {
-            if(confirm("هل أنت متأكد من حذف هذا الإعلان من السوق نهائياً؟")) {
+            if(confirm("هل أنت متأكد من حذف هذا الإعلان نهائياً؟")) {
                 db.ref('market_items/' + id).remove();
             }
         }
 
 
         // ==========================================
-        //  (باقي الأكواد للحفاظ على الوظائف السابقة)
+        //  الوظائف المتفرقة وإدارة الإعدادات
         // ==========================================
 
         function injectBakeriesData() {
@@ -1140,6 +1217,7 @@
         });
 
         function saveGeneralSettings() {
+            // لا نحدث chatEnabled هنا حتى لا يتأثر بالمفتاح
             db.ref('settings/general').update({
                 waMessage: document.getElementById('admin-wa-msg').value.trim(),
                 appLink: document.getElementById('admin-app-link').value.trim()
@@ -1231,15 +1309,32 @@
                 const jobsHtml = sectorsData[sector].map(job => `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-[11px] font-bold flex items-center gap-1 border border-gray-200">${job} <button onclick="adminDeleteJob('${sector}', '${job}')" class="text-red-500 ml-1">×</button></span>`).join('');
                 container.innerHTML += `
                     <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                        <div class="flex justify-between items-center mb-2 border-b border-gray-200 pb-2"><h5 class="font-bold text-sm">📂 ${sector}</h5><button onclick="adminDeleteSector('${sector}')" class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded font-bold">حذف القسم</button></div>
+                        <div class="flex justify-between items-center mb-2 border-b border-gray-200 pb-2">
+                            <h5 class="font-bold text-sm">📂 ${sector}</h5>
+                            <div>
+                                <button onclick="adminEditSectorName('${sector}')" class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded font-bold mr-2">تعديل الاسم</button>
+                                <button onclick="adminDeleteSector('${sector}')" class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded font-bold">حذف القسم</button>
+                            </div>
+                        </div>
                         <div class="flex flex-wrap gap-1.5 mb-3">${jobsHtml}</div>
                         <div class="flex gap-2"><input type="text" id="new-job-${sector}" placeholder="مهنة جديدة..." class="px-2 py-1.5 border border-gray-200 rounded text-xs flex-1"><button onclick="adminAddJob('${sector}')" class="bg-gray-800 text-white px-3 py-1.5 rounded text-xs font-bold">إضافة</button></div>
                     </div>`;
             });
         }
+        
         function adminAddSector() {
             const n = document.getElementById('admin-new-sector').value.trim(); if(!n || sectorsData[n]) return;
             sectorsData[n] = ["عامل"]; db.ref('settings/sectors').set(sectorsData); document.getElementById('admin-new-sector').value = '';
+        }
+        function adminEditSectorName(oldName) {
+            const newName = prompt("أدخل الاسم الجديد للقسم:", oldName);
+            if(newName && newName.trim() !== "" && newName !== oldName) {
+                const trimmed = newName.trim();
+                if(sectorsData[trimmed]) { alert("هذا الاسم موجود مسبقاً!"); return; }
+                sectorsData[trimmed] = sectorsData[oldName];
+                delete sectorsData[oldName];
+                db.ref('settings/sectors').set(sectorsData);
+            }
         }
         function adminDeleteSector(s) { if(confirm("حذف؟")) { delete sectorsData[s]; db.ref('settings/sectors').set(sectorsData); } }
         function adminAddJob(s) {
@@ -1383,7 +1478,7 @@
             dataList.forEach(r => {
                 const sL = r.status || 'يبحث عن عمال', sC = sL === 'يبحث عن عمال' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-600 border-gray-200';
                 let btns = ''; if (currentUser && (currentUser.uid === r.uid || currentUserPhone === ADMIN_PHONE)) btns = `<div class="flex gap-2 mt-3 pt-3 border-t border-gray-100"><button onclick="editRequest('${r.id}')" class="flex-1 bg-amber-100 text-amber-700 py-1.5 rounded text-xs font-bold">تعديل</button><button onclick="deleteRequest('${r.id}')" class="flex-1 bg-red-100 text-red-700 py-1.5 rounded text-xs font-bold">حذف</button></div>`;
-                let cont = ''; if (sL === 'يبحث عن عمال' || r.allowContact === 'yes') { if (r.phone) cont = `<div class="flex gap-2"><a href="tel:${r.phone}" class="flex-1 bg-blue-600 text-white text-center font-bold py-2 rounded-lg text-xs">📞 اتصال</a><a href="${getWaLink(r.phone)}" class="flex-1 bg-green-500 text-white text-center font-bold py-2 rounded-lg text-xs">💬 واتساب</a></div>`; else cont = `<span class="block w-full bg-gray-100 text-gray-500 text-center font-bold py-2 rounded-lg text-xs border">📴 لايوجد رقم</span>`; } else cont = `<span class="block w-full bg-gray-100 text-gray-500 text-center font-bold py-2 rounded-lg text-xs border">🛑 مستكفي</span>`;
+                let cont = ''; if (sL === 'يبحث عن عمال' || r.allowContact === 'yes') { if (r.phone) cont = `<div class="flex gap-2"><a href="tel:${r.phone}" class="flex-1 bg-blue-600 text-white text-center font-bold py-2 rounded-lg text-xs">📞 اتصال</a><a href="${getWaLink(r.phone)}" target="_blank" class="flex-1 bg-green-500 text-white text-center font-bold py-2 rounded-lg text-xs">💬 واتساب</a></div>`; else cont = `<span class="block w-full bg-gray-100 text-gray-500 text-center font-bold py-2 rounded-lg text-xs border">📴 لايوجد رقم</span>`; } else cont = `<span class="block w-full bg-gray-100 text-gray-500 text-center font-bold py-2 rounded-lg text-xs border">🛑 مستكفي</span>`;
                 
                 currentGrid.innerHTML += `
                     <div class="bg-white rounded-xl border border-blue-100 p-5 flex flex-col justify-between hover:shadow-md transition border-r-4 ${sL === 'يبحث عن عمال' ? 'border-r-blue-500' : 'border-r-gray-300'} relative">
